@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1041224652270",
+    "project_id": "chat-app-imagin-true",
+    "storage_bucket": "chat-app-imagin-true.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041224652270:android:7c5d21beb0f4970c03aaff",
+        "android_client_info": {
+          "package_name": "com.ahmad_alfrehan.imagin_true"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041224652270-0kjgigv2m9qf8paf8agoglnon9e5jaje.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahmad_alfrehan.imagin_true",
+            "certificate_hash": "7dc34be0c3da9d96e41692cc9163e52b09aafd97"
+          }
+        },
+        {
+          "client_id": "1041224652270-d1t6mq3c9u2btuij4upg3lru92o4lpsu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqcUn7ptjaNElTSxBdcDW2NVzQq0R1AR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041224652270-d1t6mq3c9u2btuij4upg3lru92o4lpsu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

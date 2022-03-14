@@ -97,6 +97,7 @@ class SocialSendMessageErrorStates extends SocialStates {
 }
 
 class SocialGetMessageLoadingStates extends SocialStates {}
+
 class SocialGetMessageSuccessStates extends SocialStates {}
 
 class SocialGetMessageErrorStates extends SocialStates {
@@ -104,3 +105,5 @@ class SocialGetMessageErrorStates extends SocialStates {
 
   SocialGetMessageErrorStates(this.error);
 }
+
+class SocialGetContactsSuccessStates extends SocialStates {}

@@ -107,3 +107,4 @@ class SocialGetMessageErrorStates extends SocialStates {
 }
 
 class SocialGetContactsSuccessStates extends SocialStates {}
+class SocialChangeLTRSuccessStates extends SocialStates {}

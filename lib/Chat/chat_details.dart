@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +19,10 @@ class ChatDetailes extends StatelessWidget {
   void scrollSown() {
     controllerScrol.jumpTo(controllerScrol.position.maxScrollExtent);
   }
-  String s='ahmad';
+
+  String s = 'ahmad';
+  bool isarabic = false;
+
   Future<bool> FCM(String userToken, String name) async {
     const postUrl = 'https://fcm.googleapis.com/fcm/send';
     final data = {
@@ -71,6 +75,7 @@ class ChatDetailes extends StatelessWidget {
     }
     return true;
   }
+
   @override
   Widget build(BuildContext context) {
     Size S = MediaQuery.of(context).size;
@@ -115,7 +120,6 @@ class ChatDetailes extends StatelessWidget {
                     ],
                   ),
                   toolbarHeight: S.height * 0.08,
-
                 ),
                 body: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -148,11 +152,32 @@ class ChatDetailes extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            //if (chatTextControoler.text == '')
+                            InkWell(
+                              onTap: () {
+                                ChatCubit.get(context).getFiles();
+                              },
+                              //height: 1,
+                              //minWidth: 0,
+                              child: const Icon(
+                                Icons.attachment,
+                                color: Colors.teal,
+                              ),
+                            ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextFormField(
                                   cursorColor: Colors.black,
+                                  textDirection: ChatCubit.get(context).isarabic
+                                      ? TextDirection.rtl
+                                      : TextDirection.ltr,
+                                  onChanged: (value) {
+                                    ChatCubit.get(context).isArabic(chatTextControoler.text);
+                                  },
                                   toolbarOptions: const ToolbarOptions(
                                     copy: true,
                                     cut: true,

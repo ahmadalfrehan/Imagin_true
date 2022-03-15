@@ -1,7 +1,9 @@
+import 'dart:core';
 import 'dart:io';
-
+import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +11,8 @@ import 'package:imagin_true/Chat/Cubit/states.dart';
 import 'package:imagin_true/Chat/chat.dart';
 import 'package:imagin_true/Contact/Contact.dart';
 import 'package:imagin_true/settings/Sett.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../constant.dart';
 import '../../modulo/chatModel.dart';
 import '../../modulo/usersmoder.dart';
@@ -258,6 +262,56 @@ class ChatCubit extends Cubit<SocialStates> {
     } else {
       emit(SocialImagePickedCoverErrorStates());
       print('no PostImageed Selected');
+    }
+  }
+
+  CreateFolder() async {
+    const folderName = "Ahmad_Al_Frehan";
+    final path = Directory("storage/emulated/0/$folderName");
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    if ((await path.exists())) {
+      return path.path;
+    } else {
+      path.create();
+      return path.path;
+    }
+  }
+
+  void getFiles() async {
+    CreateFolder();
+    FilePickerResult result =
+        await FilePicker.platform.pickFiles() as FilePickerResult;
+    File? file;
+    if (result != null) {
+      file = File(result.files.single.path.toString());
+      print(file.path);
+    } else {
+      print('canceled');
+    }
+    final directory = await getApplicationDocumentsDirectory();
+    String path = directory.path;
+    var file2 = basename(file!.path);
+    final File newFile =
+        await file.copy('storage/emulated/0/download/file.$file2');
+    print(directory);
+    print(newFile.path);
+  }
+
+  bool isarabic = false;
+
+  void isArabic(String s) {
+    for (int i = 0; i < s.length; i++) {
+      int c = s.codeUnitAt(i);
+      print(c);
+      emit(SocialChangeLTRSuccessStates());
+      if (c >= 0x0600 && c <= 0x06E0) {
+        isarabic = true;
+      } else {
+        //isarabic = false;
+      }
     }
   }
 }

@@ -51,6 +51,8 @@ dependencies:
   device_info: ^2.0.3
   contacts_service: ^0.6.3
   permission_handler: ^9.2.0
+  path_provider: ^2.0.9
+  file_picker: ^4.5.1
 
 dev_dependencies:
   flutter_test:

@@ -305,12 +305,11 @@ class ChatCubit extends Cubit<SocialStates> {
   void isArabic(String s) {
     for (int i = 0; i < s.length; i++) {
       int c = s.codeUnitAt(i);
-      print(c);
       emit(SocialChangeLTRSuccessStates());
       if (c >= 0x0600 && c <= 0x06E0) {
         isarabic = true;
       } else {
-        //isarabic = false;
+        isarabic = false;
       }
     }
   }

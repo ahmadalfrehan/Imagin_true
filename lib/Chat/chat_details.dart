@@ -50,7 +50,11 @@ class ChatDetailes extends StatelessWidget {
         "click_action": "FLUTTER_NOTIFICATION_CLICK"
       }
     };
-    
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization':
+          'key=AAAA8m3TVe4:APA91bG-hd_s5UmupukipOSJbfsbhrsDzpgNrfdS_G23uO-BSmHFFjPvW5lIvgb2IjtJjBCxDSNd0t41NLNhKpvSE7ts27E4edFKVoL77f_vMpVhBk3LN3F0KZcji4xs67OAdHec0sWS'
+    };
     try {
       final response = await http.post(
         Uri.parse(postUrl),

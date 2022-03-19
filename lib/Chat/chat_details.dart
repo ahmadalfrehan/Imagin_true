@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imagin_true/Chat/HisProfile.dart';
 import '../modulo/chatModel.dart';
 import '../modulo/usersmoder.dart';
 import 'Cubit/cubit.dart';
@@ -49,11 +50,7 @@ class ChatDetailes extends StatelessWidget {
         "click_action": "FLUTTER_NOTIFICATION_CLICK"
       }
     };
-    final headers = {
-      'content-type': 'application/json',
-      'Authorization':
-          'key=AAAA8m3TVe4:APA91bG-hd_s5UmupukipOSJbfsbhrsDzpgNrfdS_G23uO-BSmHFFjPvW5lIvgb2IjtJjBCxDSNd0t41NLNhKpvSE7ts27E4edFKVoL77f_vMpVhBk3LN3F0KZcji4xs67OAdHec0sWS'
-    };
+    
     try {
       final response = await http.post(
         Uri.parse(postUrl),
@@ -78,6 +75,7 @@ class ChatDetailes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var scaff = ScaffoldMessenger.of(context);
     Size S = MediaQuery.of(context).size;
     return BlocProvider(
       create: (BuildContext context) => ChatCubit()
@@ -95,137 +93,727 @@ class ChatDetailes extends StatelessWidget {
             );
           }
           return BlocConsumer<ChatCubit, SocialStates>(
-            listener: (context, state) {},
+            listener: (context, state) {
+              if (state is SocialUploadFileLoadingStates) {
+                const Center(
+                  child: LinearProgressIndicator(),
+                );
+              }
+              if (state is SocialUploadFileSuccessStates) {
+                scaff.showSnackBar(
+                  SnackBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    content: Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(55),
+                            color: Colors.green,
+                          ),
+                          child: const Center(
+                            child: Text("The File Sent Successfully"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              if (state is SocialUploadFileErrorStates) {
+                scaff.showSnackBar(
+                  SnackBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    content: Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(55),
+                            color: Colors.red,
+                          ),
+                          child: const Center(
+                            child: Text("An error occurred try again !"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              if (state is SocialDownLoadFileLoadingStates) {
+                const Center(
+                  child: LinearProgressIndicator(),
+                );
+              }
+              if (state is SocialDownLoadFileSavedStates) {
+                scaff.showSnackBar(
+                  SnackBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    content: Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(55),
+                            color: Colors.green,
+                          ),
+                          child: const Center(
+                            child: Text("The File Saved Successfully"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              if (state is SocialDownLoadFileSavedErrorStates) {
+                scaff.showSnackBar(
+                  SnackBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    content: Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(55),
+                            color: Colors.red,
+                          ),
+                          child: const Center(
+                            child: Text("Error When saved the file try again "),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            },
             builder: (context, state) {
               ChatCubit.get(context).getMessages(
                 reciverID: users.uId.toString(),
               );
               return Scaffold(
                 appBar: AppBar(
-                  backgroundColor: Colors.teal,
+                  backgroundColor: const Color.fromRGBO(236, 240, 243, 1),
                   elevation: 0,
                   titleSpacing: 0,
-                  title: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: NetworkImage(
-                          users.ImageProfile.toString(),
+                  title: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HisProfile(users),
                         ),
-                      ),
-                      SizedBox(
-                        width: S.width * 0.01,
-                      ),
-                      Text(users.name.toString()),
-                    ],
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(
+                            users.ImageProfile.toString(),
+                          ),
+                        ),
+                        SizedBox(
+                          width: S.width * 0.01,
+                        ),
+                        Text(users.name.toString()),
+                      ],
+                    ),
                   ),
                   toolbarHeight: S.height * 0.08,
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
+                body: Container(
+                  color: const Color.fromRGBO(236, 240, 243, 1),
+                  child: Stack(
                     children: [
-                      Expanded(
-                        child: ListView.separated(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: ChatCubit.get(context).messages.length,
-                          separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
-                          ),
-                          itemBuilder: (context, index) {
-                            var t = ChatCubit.get(context).messages[index];
-                            if (ChatCubit.get(context).UU!.uId == t.SenderID) {
-                              return MyMessage(t);
-                            }
-                            return HisMessage(t);
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.black),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                        ),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            //if (chatTextControoler.text == '')
-                            InkWell(
-                              onTap: () {
-                                ChatCubit.get(context).getFiles();
-                              },
-                              //height: 1,
-                              //minWidth: 0,
-                              child: const Icon(
-                                Icons.attachment,
-                                color: Colors.teal,
+                      Align(
+                        alignment: const Alignment(-1, -1),
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(236, 240, 243, 1),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
                               ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 320,
+                        top: 20,
+                        child: Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 320 / 2,
+                        top: 20,
+                        child: Container(
+                          height: 70,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 325,
+                        top: 250,
+                        child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        //bottom: 259,
+                        right: 101,
+                        left: 102,
+                        top: 236,
+                        child: Container(
+                          height: 172,
+                          width: 172,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(41),
+                            border: Border.all(
+                              color: const Color.fromRGBO(245, 245, 255, 1),
+                              width: 2,
                             ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  cursorColor: Colors.black,
-                                  textDirection: ChatCubit.get(context).isarabic
-                                      ? TextDirection.rtl
-                                      : TextDirection.ltr,
-                                  onChanged: (value) {
-                                    ChatCubit.get(context).isArabic(chatTextControoler.text);
-                                  },
-                                  toolbarOptions: const ToolbarOptions(
-                                    copy: true,
-                                    cut: true,
-                                    selectAll: true,
-                                    paste: true,
-                                  ),
-                                  textAlignVertical: TextAlignVertical.center,
-                                  maxLines: 12,
-                                  minLines: 1,
-                                  decoration: const InputDecoration(
-                                    hintText: " type your message here ..",
-                                    border: InputBorder.none,
-                                  ),
-                                  controller: chatTextControoler,
-                                  keyboardType: TextInputType.text,
-                                  validator: (String? value) {
-                                    if (value!.isEmpty) {
-                                      return 'the message must not be empty';
-                                    }
-                                    return null;
-                                  },
+                            color: const Color.fromRGBO(236, 240, 243, 1),
+                          ),
+                          child: Center(
+                            child: InkWell(
+                              onTap: () {},
+                              child: Container(
+                                height: 75,
+                                width: 76,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromRGBO(236, 240, 243, 1),
+                                  borderRadius: BorderRadius.circular(200),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      offset: Offset(3, 10),
+                                      blurRadius: 7,
+                                      spreadRadius: 6,
+                                      blurStyle: BlurStyle.normal,
+                                      color: Color.fromRGBO(151, 167, 195, 0.5),
+                                    ),
+                                    BoxShadow(
+                                      offset: Offset(-10, -20),
+                                      blurRadius: 10,
+                                      spreadRadius: 6,
+                                      blurStyle: BlurStyle.normal,
+                                      color: Color.fromRGBO(252, 252, 252, 1),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                            if (chatTextControoler.text != '')
-                              MaterialButton(
-                                minWidth: S.width * 0.01,
-                                onPressed: () {
-                                  ChatCubit.get(context).SendMessaege(
-                                    reciverID: users.uId as String,
-                                    text: chatTextControoler.text,
-                                    dateTime: DateTime.now().toString(),
-                                  );
-                                  FCM(
-                                    users.Token.toString(),
-                                    ChatCubit.get(context).UU!.name.toString(),
-                                  );
-                                  chatTextControoler = TextEditingController();
-                                },
-                                child: const Icon(Icons.send_rounded),
+                          ),
+                        ),
+                      ),
+                      //shadow
+                      Positioned(
+                        left: 130,
+                        right: 128,
+                        top: 229,
+                        child: Container(
+                          height: 1,
+                          width: 290,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(236, 240, 243, 1),
+                            // borderRadius: BorderRadius.all(
+                            // Radius.circular(50),
+                            //),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                                offset: Offset(0, 16),
+                                blurRadius: 6,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 112,
+                        right: 320,
+                        top: 250,
+                        child: Container(
+                          height: 117,
+                          width: 20,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(236, 240, 243, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                                offset: Offset(0, 16),
+                                blurRadius: 6,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 130,
+                        right: 130,
+                        top: 408,
+                        //bottom: 259,
+                        child: Container(
+                          height: 1,
+                          width: 290,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(236, 240, 243, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                                offset: Offset(0, -10),
+                                blurRadius: 6,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 303,
+                        right: 120,
+                        top: 250,
+                        child: Container(
+                          height: 120,
+                          width: 20,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(236, 240, 243, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                                offset: Offset(0, 8),
+                                blurRadius: 6,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      //angel
+                      Positioned(
+                        left: 118,
+                        right: 304,
+                        top: 240,
+                        child: Container(
+                          height: 1,
+                          width: 20,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(236, 240, 243, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                                offset: Offset(3, 16),
+                                blurRadius: 9,
+                                spreadRadius: 10,
+                                blurStyle: BlurStyle.normal,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 294,
+                        right: 134,
+                        top: 400,
+                        child: Container(
+                          height: 1,
+                          width: 20,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(236, 240, 243, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                                offset: Offset(0, -12),
+                                blurRadius: 6,
+                                spreadRadius: 10,
+                                blurStyle: BlurStyle.normal,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 427,
+                        right: 342,
+                        child: Container(
+                          height: 96,
+                          width: 97,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(0, 3),
+                                blurRadius: 6,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
                               ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 627,
+                        right: 342,
+                        child: Container(
+                          height: 100,
+                          width: 102,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(0, 3),
+                                blurRadius: 6,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 627,
+                        right: 150,
+                        child: Container(
+                          height: 100,
+                          width: 102,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(0, 3),
+                                blurRadius: 6,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                              BoxShadow(
+                                offset: Offset(3, 10),
+                                blurRadius: 7,
+                                spreadRadius: 5,
+                                blurStyle: BlurStyle.normal,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 300,
+                        top: 574,
+                        child: Container(
+                          height: 159,
+                          width: 160,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECF0F3),
+                            borderRadius: BorderRadius.circular(200),
+                            boxShadow: const [
+                              BoxShadow(
+                                offset: Offset(0, 3),
+                                blurRadius: 6,
+                                color: Color.fromRGBO(151, 167, 195, 0.5),
+                              ),
+                              BoxShadow(
+                                offset: Offset(-10, -20),
+                                blurRadius: 10,
+                                color: Color.fromRGBO(252, 252, 252, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(17.0),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                controller: ChatCubit.get(context).scroll,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount:
+                                    ChatCubit.get(context).messages.length,
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                  height: 10,
+                                ),
+                                itemBuilder: (context, index) {
+                                  var t =
+                                      ChatCubit.get(context).messages[index];
+                                  if (ChatCubit.get(context).UU!.uId ==
+                                      t.SenderID) {
+                                    return MyMessage(t, context);
+                                  }
+                                  return HisMessage(t, context);
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: Colors.blueGrey),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(50)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      ChatCubit.get(context).getFiles();
+                                    },
+                                    child: const Icon(
+                                      Icons.attachment,
+                                      color: Colors.teal,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFormField(
+                                        cursorColor: Colors.black,
+                                        textDirection:
+                                            ChatCubit.get(context).isarabic
+                                                ? TextDirection.rtl
+                                                : TextDirection.ltr,
+                                        onChanged: (value) {
+                                          ChatCubit.get(context).isArabic(
+                                              chatTextControoler.text);
+                                        },
+                                        toolbarOptions: const ToolbarOptions(
+                                          copy: true,
+                                          cut: true,
+                                          selectAll: true,
+                                          paste: true,
+                                        ),
+                                        textAlignVertical:
+                                            TextAlignVertical.center,
+                                        maxLines: 12,
+                                        minLines: 1,
+                                        decoration: const InputDecoration(
+                                          hintText:
+                                              " type your message here ..",
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: chatTextControoler,
+                                        keyboardType: TextInputType.text,
+                                        validator: (String? value) {
+                                          if (value!.isEmpty) {
+                                            return 'the message must not be empty';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  if (chatTextControoler.text != '' ||
+                                      ChatCubit.get(context).file != null)
+                                    MaterialButton(
+                                      minWidth: S.width * 0.01,
+                                      onPressed: () {
+                                        if (ChatCubit.get(context).file ==
+                                            null) {
+                                          ChatCubit.get(context).SendMessaege(
+                                            reciverID: users.uId as String,
+                                            text: chatTextControoler.text,
+                                            dateTime: DateTime.now().toString(),
+                                          );
+                                          FCM(
+                                            users.Token.toString(),
+                                            ChatCubit.get(context)
+                                                .UU!
+                                                .name
+                                                .toString(),
+                                          );
+                                          chatTextControoler =
+                                              TextEditingController();
+                                        } else {
+                                          ChatCubit.get(context).uploadFile(
+                                            reciverID: users.uId as String,
+                                            text: chatTextControoler.text,
+                                            dateTime: DateTime.now().toString(),
+                                          );
+                                          FCM(
+                                            users.Token.toString(),
+                                            ChatCubit.get(context)
+                                                .UU!
+                                                .name
+                                                .toString(),
+                                          );
+                                          chatTextControoler =
+                                              TextEditingController();
+                                        }
+                                      },
+                                      child: const Icon(Icons.send_rounded),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: S.width * 0.01,
+                            )
                           ],
                         ),
                       ),
-                      SizedBox(
-                        width: S.width * 0.01,
-                      )
                     ],
+                  ),
+                ),
+                floatingActionButton: Align(
+                  alignment: const Alignment(0.97, 0.8),
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.black87,
+                    onPressed: () {
+                      ChatCubit.get(context).scrolltoDown();
+                    },
+                    elevation: 5,
+                    mini: true,
+                    child: const Icon(Icons.keyboard_arrow_down,
+                        color: Colors.blueGrey),
                   ),
                 ),
               );
@@ -236,46 +824,249 @@ class ChatDetailes extends StatelessWidget {
     );
   }
 
-  Widget MyMessage(ChatModel t) => Align(
+  Widget MyMessage(ChatModel t, context) => Align(
         alignment: AlignmentDirectional.centerEnd,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: const BoxDecoration(
-            color: Colors.teal,
+            color: Colors.blueGrey,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),
               bottomLeft: Radius.circular(15),
             ),
           ),
-          child: Text(
-            '${t.text}',
-            style: const TextStyle(
-              fontFamily: 'Raleway',
-              color: Colors.white,
-            ),
-          ),
+          child: t.Url == ""
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SelectableText(
+                      '${t.text}',
+                      style: const TextStyle(
+                        fontFamily: 'Raleway',
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      '${t.dateTime!.substring(10, 16)}' + '   \u2713',
+                      style: const TextStyle(
+                        fontFamily: 'Raleway',
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 9,
+                      ),
+                    ),
+                  ],
+                )
+              : InkWell(
+                  onTap: () {
+                    var e = AlertDialog(
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text(
+                              'cancel',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        title: const Text("Save File ? "),
+                        content: ElevatedButton(
+                          onPressed: () {
+                            ChatCubit.get(context)
+                                .SaveFile(Url: t.Url.toString());
+                          },
+                          child: Row(
+                            children: const [
+                              Icon(Icons.download),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Save ?'),
+                            ],
+                          ),
+                        ));
+                    showDialog(context: context, builder: (context) => e);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                            image: t.Url!.split('.').last.substring(0, 3) ==
+                                        'jpg' ||
+                                    t.Url!.split('.').last.substring(0, 3) ==
+                                        'png'
+                                ? DecorationImage(
+                                    image: NetworkImage(
+                                      t.Url.toString(),
+                                    ),
+                                    fit: BoxFit.contain,
+                                  )
+                                : const DecorationImage(
+                                    image: NetworkImage(
+                                        'https://img.freepik.com/free-psd/3d-rendering-ui-icon_23-2149182288.jpg?size=338&ext=jpg&ga=GA1.2.44267276.1645656478'))),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SelectableText(
+                        '${t.text}',
+                        style: const TextStyle(
+                          fontFamily: 'Raleway',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      Text(
+                        '${t.dateTime!.substring(10, 16)}' + '   \u2713',
+                        style: const TextStyle(
+                          fontFamily: 'Raleway',
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 9,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
         ),
       );
 
-  Widget HisMessage(ChatModel t) => Align(
+  Widget HisMessage(ChatModel t, context) => Align(
         alignment: AlignmentDirectional.centerStart,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: const BoxDecoration(
-            color: Colors.black87,
+            color: Colors.black45,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),
               bottomRight: Radius.circular(15),
             ),
           ),
-          child: Text(
-            t.text.toString(),
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
+          child: t.Url == ""
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SelectableText(
+                      '${t.text}',
+                      style: const TextStyle(
+                        fontFamily: 'Raleway',
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      '${t.dateTime!.substring(10, 16)}',
+                      style: const TextStyle(
+                        fontFamily: 'Raleway',
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 9,
+                      ),
+                    ),
+                  ],
+                )
+              : InkWell(
+                  onTap: () {
+                    var e = AlertDialog(
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text(
+                              'cancel',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        title: const Text("Save File ? "),
+                        content: ElevatedButton(
+                          onPressed: () {
+                            ChatCubit.get(context)
+                                .SaveFile(Url: t.Url.toString());
+                          },
+                          child: Row(
+                            children: const [
+                              Icon(Icons.download),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text('Save ?'),
+                            ],
+                          ),
+                        ));
+                    showDialog(context: context, builder: (context) => e);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                            image: t.Url!.split('.').last.substring(0, 3) ==
+                                        'jpg' ||
+                                    t.Url!.split('.').last.substring(0, 3) ==
+                                        'png'
+                                ? DecorationImage(
+                                    image: NetworkImage(
+                                      t.Url.toString(),
+                                    ),
+                                    fit: BoxFit.contain,
+                                  )
+                                : const DecorationImage(
+                                    image: NetworkImage(
+                                        'https://img.freepik.com/free-psd/3d-rendering-ui-icon_23-2149182288.jpg?size=338&ext=jpg&ga=GA1.2.44267276.1645656478'))),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SelectableText(
+                        t.text.toString(),
+                        style: const TextStyle(
+                          fontFamily: 'Raleway',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      Text(
+                        '${t.dateTime!.substring(10, 16)}',
+                        style: const TextStyle(
+                          fontFamily: 'Raleway',
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 9,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
         ),
       );
 }

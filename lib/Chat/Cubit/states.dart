@@ -107,4 +107,19 @@ class SocialGetMessageErrorStates extends SocialStates {
 }
 
 class SocialGetContactsSuccessStates extends SocialStates {}
+
 class SocialChangeLTRSuccessStates extends SocialStates {}
+
+class SocialUploadFileSuccessStates extends SocialStates {}
+
+class SocialUploadFileErrorStates extends SocialStates {}
+
+class SocialUploadFileLoadingStates extends SocialStates {}
+
+class SocialDownLoadFileLoadingStates extends SocialStates {}
+
+class SocialDownLoadFileSavedStates extends SocialStates {}
+
+class SocialDownLoadFileSavedErrorStates extends SocialStates {}
+
+class SocialChangeFontSuccessStates extends SocialStates {}

@@ -54,6 +54,7 @@ class Chat extends StatelessWidget {
               builder: (context) => ChatDetailes(users),
             ),
           );
+          ChatCubit.get(context).scrolltoDown();
         },
         child: Padding(
           padding: const EdgeInsets.all(20.0),

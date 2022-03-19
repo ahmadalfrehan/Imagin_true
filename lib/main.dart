@@ -1,4 +1,5 @@
 import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:imagin_true/Earth.dart';
 import 'dart:io';
@@ -7,38 +8,37 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imagin_true/sharedHELper.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'Chat/Cubit/cubit.dart';
 import 'Chat/Cubit/states.dart';
 import 'constant.dart';
 import 'login/login_screen.dart';
 
+Future<PermissionStatus> getContactPermission() async {
+  PermissionStatus permission = await Permission.contacts.status;
+  if (permission != PermissionStatus.granted &&
+      permission != PermissionStatus.permanentlyDenied) {
+    PermissionStatus permissionStatus = await Permission.contacts.request();
+    return permissionStatus;
+  } else {
+    return permission;
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  var token = await FirebaseMessaging.instance.getToken();
-  print('the token is :' + token.toString());
-  String? define;
-  final DeviceInfoPlugin dev = new DeviceInfoPlugin();
-  if (Platform.isAndroid) {
-    var build = await dev.androidInfo;
-    define = build.id.toString();
-    print(build.fingerprint);
-    print("the define is " + define.toString());
-  }
-  var list = ContactsService.getContacts();
-  print(list.toString());
+  PermissionStatus permissionStatus = await getContactPermission();
   await Shard.initial();
-  Shard.saveData(key: "sss", value: "Ahmad");
   String? s;
   uId = Shard.sharedprefrences!.getString('uId');
   print(uId);
   Widget widget;
-  if (uId != null) {
+  if (uId != null && permissionStatus == PermissionStatus.granted) {
     widget = const Earth();
   } else {
     widget = LoginScreen();
   }
-  //runApp(ContactsExampleApp());
   runApp(MyApp(widget));
 }
 
@@ -64,37 +64,76 @@ class MyHomePage extends StatelessWidget {
 
   MyHomePage(this.widget);
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var x = 5;
 
   @override
   Widget build(BuildContext context) {
     var scaff = ScaffoldMessenger.of(context);
     FirebaseMessaging.onMessage.listen((event) {
-      print('onMessaging');
       print(event.data.toString());
       scaff.showSnackBar(
         SnackBar(
-          content: const Text("onMessaging"),
-          action: SnackBarAction(label: "onMessage", onPressed: () {}),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          content: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.width * 0.9,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(55),
+                  color: Colors.green,
+                ),
+                child: const Center(
+                  child: Text("You received a message"),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print('onMessageOpenedApp');
       print(event.data.toString());
-      scaff.showSnackBar(SnackBar(
-        content: const Text("onMessageOpenedApp"),
-        action: SnackBarAction(label: "onMessageOpenedApp", onPressed: () {}),
-      ));
+      scaff.showSnackBar(
+        SnackBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          content: Column(
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.width * 0.9,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(55),
+                  color: Colors.green,
+                ),
+                child: const Center(
+                  child: Text("You received a message"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     });
+
     return BlocProvider(
-      create: (BuildContext context) => ChatCubit()
-        ..getUsers()
-        ..getContacts(),
+      create: (BuildContext context) => ChatCubit()..getUsers(),
       child: BlocConsumer<ChatCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          return Scaffold(key: _scaffoldKey, body: widget);
+          return Scaffold(
+            key: _scaffoldKey,
+            body: widget,
+          );
         },
       ),
     );

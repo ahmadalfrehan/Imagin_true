@@ -7,7 +7,9 @@ import '../../modulo/usersmoder.dart';
 
 class RegisterCubit extends Cubit<RegisterStates> {
   RegisterCubit() : super(RegisterInitialState());
+
   static RegisterCubit get(context) => BlocProvider.of(context);
+
   void userRegister({
     required String name,
     required String email,
@@ -32,7 +34,9 @@ class RegisterCubit extends Cubit<RegisterStates> {
       emit(RegisterErrorState(onError.toString()));
     });
   }
-  var token =FirebaseMessaging.instance.getToken();
+
+  var token = FirebaseMessaging.instance.getToken();
+
   void createUser({
     required String name,
     required String email,
@@ -40,13 +44,13 @@ class RegisterCubit extends Cubit<RegisterStates> {
     required String uId,
     required bool isEmailVerifaed,
   }) async {
-    var token =await FirebaseMessaging.instance.getToken();
+    var token = await FirebaseMessaging.instance.getToken();
     UsersModel U = UsersModel(
       name: name,
       email: email,
       phone: phone,
       uId: uId,
-      Bio: "Write Your Bio..",
+      Bio: "Hello There this is my Bio...!",
       Token: token.toString(),
       Cover:
           'https://img.freepik.com/free-vector/meadow-with-pond-conifers-hills-night_107791-10085.jpg?t=st=1645656526~exp=1645657126~hmac=cf22968efb78b6750bffb4fbe5ae7809de6c4cc8e0386dcfc5e9588e520d066f&w=996',

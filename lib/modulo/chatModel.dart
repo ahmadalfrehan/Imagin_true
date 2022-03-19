@@ -3,11 +3,14 @@ class ChatModel {
   String? reciverID;
   String? SenderID;
   String? dateTime;
+  String? Url;
+
   ChatModel({
     this.text,
     this.reciverID,
     this.SenderID,
     this.dateTime,
+    this.Url,
   });
 
   ChatModel.fromJson(Map<String, dynamic> json) {
@@ -15,6 +18,7 @@ class ChatModel {
     reciverID = json['reciverID'];
     SenderID = json['SenderID'];
     dateTime = json['dateTime'];
+    Url = json['Url'];
   }
 
   Map<String, dynamic> toMap() {
@@ -23,6 +27,7 @@ class ChatModel {
       'reciverID': reciverID,
       'SenderID': SenderID,
       'dateTime': dateTime,
+      'Url': Url,
     };
   }
 }

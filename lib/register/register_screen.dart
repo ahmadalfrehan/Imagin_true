@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../main.dart';
@@ -34,21 +35,51 @@ class RegisterScreen extends StatelessWidget {
           if (state is RegisterSuccessState) {
             scaff.showSnackBar(
               SnackBar(
-                content: const Text(
-                    "You did a great job..You created the account successfully now please login "),
-                action: SnackBarAction(
-                  label: "Undo",
-                  onPressed: scaff.hideCurrentSnackBar,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                content: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(55),
+                        color: Colors.green,
+                      ),
+                      child: const Center(
+                        child: Text(
+                            "You did a great job..You created the account successfully now please login "),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           } else if (state is RegisterErrorState) {
             scaff.showSnackBar(
               SnackBar(
-                content: Text(state.error),
-                action: SnackBarAction(
-                  label: "Undo",
-                  onPressed: scaff.hideCurrentSnackBar,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                content: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(55),
+                        color: Colors.red,
+                      ),
+                      child: const Center(
+                        child: Text("An error occurred try again !"),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -58,7 +89,7 @@ class RegisterScreen extends StatelessWidget {
           return Scaffold(
             body: SafeArea(
               child: Container(
-                constraints: BoxConstraints.expand(),
+                constraints: const BoxConstraints.expand(),
                 decoration: const BoxDecoration(),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
@@ -78,11 +109,11 @@ class RegisterScreen extends StatelessWidget {
                         style: TextStyle(),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
                         child: TextFormField(
                           decoration: InputDecoration(
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                 Icons.person,
                               ),
                               fillColor: Colors.white,
@@ -102,11 +133,11 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
                         child: TextFormField(
                           decoration: InputDecoration(
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                 Icons.email,
                               ),
                               border: OutlineInputBorder(
@@ -126,12 +157,12 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
                         child: TextFormField(
                           decoration: InputDecoration(
                               hoverColor: Colors.green,
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                 Icons.lock,
                               ),
                               border: OutlineInputBorder(
@@ -152,11 +183,11 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
                         child: TextFormField(
                           decoration: InputDecoration(
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                 Icons.phone_android_outlined,
                               ),
                               fillColor: Colors.white,
@@ -167,33 +198,12 @@ class RegisterScreen extends StatelessWidget {
                               labelText: 'number'),
                           controller: numberController,
                           keyboardType: TextInputType.text,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           validator: (String? value) {
                             if (value!.isEmpty) {
                               return 'the password must not be empty';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.facebook,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              labelText: 'facebook'),
-                          controller: facebookController,
-                          keyboardType: TextInputType.text,
-                          validator: (String? value) {
-                            if (value!.isEmpty) {
-                              return 'the facebook must not be empty';
                             }
                             return null;
                           },
@@ -204,7 +214,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          side: BorderSide(),
+                          side: const BorderSide(),
                           elevation: 7,
                           shape: const StadiumBorder(side: BorderSide()),
                           fixedSize: const Size(300, 50),
@@ -218,7 +228,8 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () async {
-                          var token = await FirebaseMessaging.instance.getToken();
+                          var token =
+                              await FirebaseMessaging.instance.getToken();
                           print('the token is :' + token.toString());
                           RegisterCubit.get(context).userRegister(
                             isEmailVerifaed: false,
@@ -241,7 +252,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          side: BorderSide(color: Colors.white),
+                          side: const BorderSide(color: Colors.white),
                           primary: Colors.white,
                           elevation: 7,
                           shape: const StadiumBorder(side: BorderSide()),
@@ -266,7 +277,7 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       )
                     ],

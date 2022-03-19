@@ -1,5 +1,8 @@
 import 'dart:core';
 import 'dart:io';
+import 'dart:math';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -13,9 +16,12 @@ import 'package:imagin_true/Contact/Contact.dart';
 import 'package:imagin_true/settings/Sett.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../Earth.dart';
 import '../../constant.dart';
 import '../../modulo/chatModel.dart';
 import '../../modulo/usersmoder.dart';
+import '../../settings/Settings.dart';
+import '../../sharedHELper.dart';
 
 class ChatCubit extends Cubit<SocialStates> {
   ChatCubit() : super(SocialInitialStates());
@@ -26,12 +32,14 @@ class ChatCubit extends Cubit<SocialStates> {
   List titles = [
     'Chat',
     'Contacts',
-    'settings',
+    'My Profile',
+    'Settings',
   ];
   List screens = [
     Chat(),
     const Contactss(),
     const SettingScreen(),
+    const SettingsS(),
   ];
   int Cindex = 0;
 
@@ -95,15 +103,16 @@ class ChatCubit extends Cubit<SocialStates> {
     required String reciverID,
     required String text,
     required String dateTime,
+    String? Url,
   }) {
     ChatModel modelChat = ChatModel(
-      text: text,
-      SenderID: UU!.uId as String,
-      reciverID: reciverID,
-      dateTime: dateTime,
-    );
+        text: text,
+        SenderID: UU!.uId as String,
+        reciverID: reciverID,
+        dateTime: dateTime,
+        Url: Url ?? "");
     FirebaseFirestore.instance
-        .collection('users')
+        .collection('chatusers')
         .doc(UU!.uId)
         .collection('chats')
         .doc(reciverID)
@@ -116,7 +125,7 @@ class ChatCubit extends Cubit<SocialStates> {
       emit(SocialSendMessageErrorStates(onError.toString()));
     });
     FirebaseFirestore.instance
-        .collection('users')
+        .collection('chatusers')
         .doc(reciverID)
         .collection('chats')
         .doc(UU!.uId)
@@ -135,7 +144,7 @@ class ChatCubit extends Cubit<SocialStates> {
   void getMessages({required String reciverID}) {
     emit(SocialGetMessageSuccessStates());
     FirebaseFirestore.instance
-        .collection('users')
+        .collection('chatusers')
         .doc(UU?.uId)
         .collection('chats')
         .doc(reciverID)
@@ -147,9 +156,31 @@ class ChatCubit extends Cubit<SocialStates> {
       event.docs.forEach((element) {
         messages.add(ChatModel.fromJson(element.data()));
       });
-      emit(SocialGetMessageSuccessStates());
+      //emit(SocialGetMessageSuccessStates());
     });
   }
+
+  List latestMesaage = [];
+
+  /*getLatestMessage() {
+    FirebaseFirestore.instance.collection('chatusers').get().then((value) {
+      value.docs.forEach((element) {
+        FirebaseFirestore.instance
+            .collection('chatusers')
+            .doc(UU?.uId)
+            .collection('chats')
+            .doc(element.data()['uId'])
+            .collection('messages')
+            .orderBy('dateTime')
+            .snapshots()
+            .listen((event) {
+          event.docs.forEach((element) {
+            latestMesaage.add(ChatModel.fromJson(element.data()));
+          });
+        });
+      });
+    });
+  }*/
 
   var imageProfile;
   final Picker = ImagePicker();
@@ -185,7 +216,7 @@ class ChatCubit extends Cubit<SocialStates> {
     emit(SocialUploadImageProfileLoadingStates());
     FirebaseStorage.instance
         .ref()
-        .child('users/${Uri.file(imageProfile!.path).pathSegments.last}')
+        .child('chatusers/${Uri.file(imageProfile!.path).pathSegments.last}')
         .putFile(imageProfile)
         .then((value) {
       value.ref.getDownloadURL().then((value) {
@@ -206,7 +237,7 @@ class ChatCubit extends Cubit<SocialStates> {
     emit(SocialUploadImageCoverLoadingStates());
     FirebaseStorage.instance
         .ref()
-        .child('users/${Uri.file(imageCover!.path).pathSegments.last}')
+        .child('chatusers/${Uri.file(imageCover!.path).pathSegments.last}')
         .putFile(imageCover)
         .then((value) {
       value.ref.getDownloadURL().then((value) {
@@ -241,7 +272,7 @@ class ChatCubit extends Cubit<SocialStates> {
         isEmailVerifaed: false,
       );
       FirebaseFirestore.instance
-          .collection('users')
+          .collection('chatusers')
           .doc(uId)
           .update(UserModelUpdate.toMap())
           .then((value) {
@@ -280,14 +311,15 @@ class ChatCubit extends Cubit<SocialStates> {
     }
   }
 
+  File? file;
+
   void getFiles() async {
-    CreateFolder();
+    //CreateFolder();
     FilePickerResult result =
         await FilePicker.platform.pickFiles() as FilePickerResult;
-    File? file;
     if (result != null) {
       file = File(result.files.single.path.toString());
-      print(file.path);
+      print(file!.path);
     } else {
       print('canceled');
     }
@@ -295,9 +327,30 @@ class ChatCubit extends Cubit<SocialStates> {
     String path = directory.path;
     var file2 = basename(file!.path);
     final File newFile =
-        await file.copy('storage/emulated/0/download/file.$file2');
+        await file!.copy('storage/emulated/0/download/file.$file2');
     print(directory);
     print(newFile.path);
+  }
+
+  var dio = Dio();
+
+  SaveFile({required String Url}) {
+    emit(SocialDownLoadFileLoadingStates());
+    var r = Random();
+    String name =
+        String.fromCharCodes(List.generate(10, (index) => r.nextInt(65) + 90));
+    name = name.trim().replaceAll('\\', 'k');
+    name = name.trim().replaceAll('|', 'l');
+    print(name);
+    emit(SocialDownLoadFileSavedStates());
+    String type = Url.split('.').last.substring(0, 3);
+    try {
+      dio.downloadUri(
+          Uri.parse(Url), "storage/emulated/0/download/$name.$type");
+    } catch (e) {
+      emit(SocialDownLoadFileSavedErrorStates());
+      print(e);
+    }
   }
 
   bool isarabic = false;
@@ -311,6 +364,68 @@ class ChatCubit extends Cubit<SocialStates> {
       } else {
         isarabic = false;
       }
+    }
+  }
+
+  String? SendFile;
+
+  uploadFile({
+    required String reciverID,
+    required String text,
+    required String dateTime,
+  }) {
+    emit(SocialUploadFileLoadingStates());
+    FirebaseStorage.instance
+        .ref()
+        .child('chatusers/${Uri.file(file!.path).pathSegments.last}')
+        .putFile(file!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        print(value);
+        SendMessaege(
+          reciverID: reciverID,
+          text: text,
+          dateTime: dateTime,
+          Url: value,
+        );
+        emit(SocialUploadFileSuccessStates());
+        SendFile = value;
+      }).catchError((onError) {
+        print("error" + onError.toString());
+        emit(SocialUploadFileErrorStates());
+      });
+    }).catchError((onError) {
+      print("error" + onError.toString());
+      emit(SocialUploadFileErrorStates());
+    });
+  }
+
+  double? FontSized; //Shard.getData(key: 'FontSized');
+  List<double> fontS = [
+    10,
+    22,
+    30,
+    40,
+    60,
+    80,
+    90,
+    100,
+  ];
+
+  void ChangeFont(double val) async {
+    FontSized = val;
+    emit(SocialChangeFontSuccessStates());
+    await Shard.saveData(
+      key: 'FontSized',
+      value: FontSized,
+    );
+    print('fontSvaed');
+  }
+  bool isS = true;
+  var scroll = ScrollController();
+  void scrolltoDown() {
+    if (scroll.hasClients) {
+      scroll.jumpTo(scroll.position.maxScrollExtent);
     }
   }
 }

@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imagin_true/Earth.dart';
 import 'package:imagin_true/main.dart';
 import '../Chat/chat.dart';
+import '../constant.dart';
 import '../register/register_screen.dart';
 import '../sharedHELper.dart';
 import 'cubit/cubit.dart';
@@ -14,6 +16,8 @@ class LoginScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passController = TextEditingController();
+  var ResetpassController = TextEditingController();
+  var Scaffoldkey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,33 +28,66 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginSuccessState) {
             Shard.saveData(key: 'uId', value: state.uId).then((value) {
-              print('uid saved successfully');
-              print(state.uId);
-              print(Shard.getData(key: 'uId').toString());
+              uId = Shard.sharedprefrences!.getString('uId');
+              Timer(
+                const Duration(seconds: 1),
+                    () => main(),
+              );
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>  Chat(),
+                  builder: (context) => Earth(),
                 ),
               );
-              Timer(Duration(seconds: 2), () =>main(),);
             });
             scaff.showSnackBar(
               SnackBar(
-                content: const Text("success"),
-                action: SnackBarAction(
-                  label: "Undo",
-                  onPressed: scaff.hideCurrentSnackBar,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                content: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(55),
+                        color: Colors.green,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Success",
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           } else if (state is LoginErrorState) {
             scaff.showSnackBar(
               SnackBar(
-                content: Text(state.error),
-                action: SnackBarAction(
-                  label: "Undo",
-                  onPressed: scaff.hideCurrentSnackBar,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                content: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(55),
+                        color: Colors.red,
+                      ),
+                      child: const Center(
+                        child: Text("An error occurred try again !"),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -58,6 +95,7 @@ class LoginScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
+            key: Scaffoldkey,
             body: Container(
               constraints: const BoxConstraints.expand(),
               decoration: const BoxDecoration(
@@ -198,10 +236,57 @@ class LoginScreen extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        FirebaseAuth.instance.sendPasswordResetEmail(email: 'ahmadfrehan333@gmail.com');
+                        Scaffoldkey.currentState!
+                            .showBottomSheet(
+                              (context) => Scaffold(
+                                body: Container(
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: TextFormField(
+                                          controller: ResetpassController,
+                                          decoration: InputDecoration(
+                                            label:
+                                                const Text("write your email"),
+                                            fillColor: Colors.white,
+                                            filled: true,
+                                            enabled: true,
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.text,
+                                          validator: (String? value) {
+                                            if (value!.isEmpty) {
+                                              return 'the field must not be empty';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          FirebaseAuth.instance
+                                              .sendPasswordResetEmail(
+                                                  email:
+                                                      ResetpassController.text);
+                                        },
+                                        child: const Text('Send ? '),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            .closed;
                       },
                       child: const Text(
-                        "reset password ?",
+                        "Forgot password ?",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,

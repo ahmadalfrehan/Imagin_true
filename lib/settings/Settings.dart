@@ -29,7 +29,7 @@ class SettingsS extends StatelessWidget {
                             .fontS
                             .contains(ChatCubit.get(context).FontSized)
                         ? const Text(
-                            'Select the font Sized please',
+                            'Select the font Size',
                           )
                         : Text(ChatCubit.get(context).FontSized.toString()),
                     items: ChatCubit.get(context).fontS.map((double value) {

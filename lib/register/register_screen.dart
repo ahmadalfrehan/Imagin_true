@@ -16,6 +16,7 @@ class RegisterScreen extends StatelessWidget {
   var passController = TextEditingController();
   var numberController = TextEditingController();
   var facebookController = TextEditingController();
+  var isAbscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +163,17 @@ class RegisterScreen extends StatelessWidget {
                         child: TextFormField(
                           decoration: InputDecoration(
                               hoverColor: Colors.green,
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    isAbscure
+                                        ? isAbscure = RegisterCubit.get(context)
+                                            .ChangeBool(isAbscure, false)
+                                        : isAbscure = RegisterCubit.get(context)
+                                            .ChangeBool(isAbscure, true);
+                                  },
+                                  child: isAbscure
+                                      ? Icon(Icons.visibility_off)
+                                      : Icon(Icons.visibility)),
                               prefixIcon: const Icon(
                                 Icons.lock,
                               ),
@@ -173,6 +185,7 @@ class RegisterScreen extends StatelessWidget {
                               focusColor: Colors.black,
                               labelText: 'Password'),
                           controller: passController,
+                          obscureText: isAbscure,
                           keyboardType: TextInputType.text,
                           validator: (String? value) {
                             if (value!.isEmpty) {

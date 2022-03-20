@@ -2,7 +2,9 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:imagin_true/Chat/All.dart';
 import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -28,15 +30,18 @@ class ChatCubit extends Cubit<SocialStates> {
 
   static ChatCubit get(context) => BlocProvider.of(context);
   List<UsersModel> users = [];
+  List<UsersModel> Allusers = [];
   UsersModel? UU;
   List titles = [
     'Chat',
+    'All Users',
     'Contacts',
     'My Profile',
     'Settings',
   ];
   List screens = [
     Chat(),
+    AllU(),
     const Contactss(),
     const SettingScreen(),
     const SettingsS(),
@@ -83,7 +88,7 @@ class ChatCubit extends Cubit<SocialStates> {
       });
     });
     FirebaseFirestore.instance.collection('chatusers').get().then((value) {
-      emit(SocialGetLikeSuccessState());
+      emit(SocialGetAllUserSuccessStates());
       value.docs.forEach((element) {
         if (element.data()['uId'] != uId) {
           for (int i = 0; i < phones.length; i++) {
@@ -95,7 +100,21 @@ class ChatCubit extends Cubit<SocialStates> {
         }
       });
     }).catchError((onError) {
-      //emit(SocialGetAllUserErrorStates(onError.toString()));
+      emit(SocialGetAllUserErrorStates(onError.toString()));
+    });
+  }
+
+  void getAllUsersWithOutRelat() async {
+    emit(SocialGetAllUserWithOutRealtionLoadingStates());
+    FirebaseFirestore.instance.collection('chatusers').get().then((value) {
+      emit(SocialGetAllUserWithOutRealtionSuccessStates());
+      value.docs.forEach((element) {
+        if (element.data()['uId'] != uId) {
+          Allusers.add(UsersModel.fromJson(element.data()));
+        }
+      });
+    }).catchError((onError) {
+      emit(SocialGetAllUserWithOutRealtionErrorStates(onError().toString()));
     });
   }
 
@@ -254,22 +273,25 @@ class ChatCubit extends Cubit<SocialStates> {
     });
   }
 
+  //var token = FirebaseMessaging.instance.getToken();
   void UpdateUser({
     required String name,
     required String phone,
     required String bio,
-  }) {
+  }) async {
     {
+      var token = await FirebaseMessaging.instance.getToken();
       emit(SocialUpdateUserLoadingStates());
       UsersModel UserModelUpdate = UsersModel(
-        name: name,
-        phone: phone,
-        Bio: bio,
+        name: name == "" ? UU!.name : name,
+        phone: phone == "" ? UU!.phone : phone,
+        Bio: bio == "" ? UU!.Bio : bio,
         email: UU!.email,
         uId: UU!.uId,
         Cover: CoverImageUrl ?? UU!.Cover,
         ImageProfile: PrifileImageUrl ?? UU!.ImageProfile,
         isEmailVerifaed: false,
+        Token: token.toString(),
       );
       FirebaseFirestore.instance
           .collection('chatusers')
@@ -421,11 +443,30 @@ class ChatCubit extends Cubit<SocialStates> {
     );
     print('fontSvaed');
   }
+
   bool isS = true;
   var scroll = ScrollController();
+
   void scrolltoDown() {
-    if (scroll.hasClients) {
-      scroll.jumpTo(scroll.position.maxScrollExtent);
+    emit(SocialisAutoScrollingStates());
+      if (scroll.hasClients) {
+        scroll.jumpTo(scroll.position.maxScrollExtent);
+    }
+  }
+  bool ChangeVar(var x,var y){
+    emit(SocialChangeVarStates());
+    print(y);
+    x = y;
+    print(x);
+    return x;
+  }
+
+  void scrolltoTop(bool isAutoScrolling) {
+    emit(SocialisAutoScrollingStates());
+    if (isAutoScrolling) {
+      if (scroll.hasClients) {
+        scroll.jumpTo(scroll.position.minScrollExtent);
+      }
     }
   }
 }

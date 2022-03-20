@@ -6,6 +6,7 @@ class LoginCubit extends Cubit<LoginStates> {
   LoginCubit() : super(LoginInitialState());
 
   static LoginCubit get(context) => BlocProvider.of(context);
+
   userLogin({
     required String email,
     required String password,
@@ -22,5 +23,11 @@ class LoginCubit extends Cubit<LoginStates> {
       emit(LoginErrorState(onError.toString()));
       print("slbnsonbaso;w" + onError.toString());
     });
+  }
+
+  bool ChangeBool(var c, var y) {
+    emit(ChangePasswordVisibilityState());
+    c = y;
+    return c;
   }
 }

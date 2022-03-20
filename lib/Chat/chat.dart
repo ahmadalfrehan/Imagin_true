@@ -21,10 +21,23 @@ class Chat extends StatelessWidget {
       child: BlocConsumer<ChatCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          if (state is SocialGetAllUserLoadingStates ||
-              ChatCubit.get(context).users.isEmpty) {
+          if (state is SocialGetAllUserLoadingStates) {
             return const Center(
               child: CircularProgressIndicator(),
+            );
+          }
+          if (ChatCubit.get(context).users.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'There is no users in your contacts using this app',
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             );
           }
           return Scaffold(

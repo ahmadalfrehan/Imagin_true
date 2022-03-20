@@ -22,6 +22,16 @@ class SocialGetAllUserErrorStates extends SocialStates {
   SocialGetAllUserErrorStates(this.error);
 }
 
+class SocialGetAllUserWithOutRealtionLoadingStates extends SocialStates {}
+
+class SocialGetAllUserWithOutRealtionSuccessStates extends SocialStates {}
+
+class SocialGetAllUserWithOutRealtionErrorStates extends SocialStates {
+  final String error;
+
+  SocialGetAllUserWithOutRealtionErrorStates(this.error);
+}
+
 class SocialChangeBottomNavStates extends SocialStates {}
 
 class SocialNewPostStates extends SocialStates {}
@@ -123,3 +133,5 @@ class SocialDownLoadFileSavedStates extends SocialStates {}
 class SocialDownLoadFileSavedErrorStates extends SocialStates {}
 
 class SocialChangeFontSuccessStates extends SocialStates {}
+class SocialisAutoScrollingStates extends SocialStates {}
+class SocialChangeVarStates extends SocialStates {}

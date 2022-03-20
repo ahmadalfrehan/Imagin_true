@@ -10,6 +10,9 @@ class EditProfile extends StatelessWidget {
   var nameController = TextEditingController();
   var phoneController = TextEditingController();
   var bioController = TextEditingController();
+  var nameControllerInitial = TextEditingController();
+  var phoneControllerInitial = TextEditingController();
+  var bioControllerInitial = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +25,9 @@ class EditProfile extends StatelessWidget {
           var UserModell = ChatCubit.get(context).UU;
           File? image = ChatCubit.get(context).imageProfile;
           if (UserModell != null) {
-            nameController.text = UserModell.name.toString();
-            phoneController.text = UserModell.phone.toString();
-            bioController.text = UserModell.Bio.toString();
+            nameControllerInitial.text = UserModell.name.toString();
+            phoneControllerInitial.text = UserModell.phone.toString();
+            bioControllerInitial.text = UserModell.Bio.toString();
           }
           return Scaffold(
             appBar: AppBar(
@@ -167,8 +170,7 @@ class EditProfile extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: TextField(
-
+                        child: TextFormField(
                           controller: nameController,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -186,6 +188,7 @@ class EditProfile extends StatelessWidget {
                             prefixIcon: const Icon(
                               Icons.search,
                             ),
+                            hintText: nameControllerInitial.text,
                             labelText: "name",
                           ),
                         ),
@@ -211,6 +214,7 @@ class EditProfile extends StatelessWidget {
                               Icons.search,
                             ),
                             labelText: "phone",
+                            hintText: phoneControllerInitial.text,
                           ),
                         ),
                       ),
@@ -218,6 +222,9 @@ class EditProfile extends StatelessWidget {
                         padding: const EdgeInsets.all(20.0),
                         child: TextField(
                           controller: bioController,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 1,
+                          maxLines: 4,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20.0),
@@ -235,6 +242,7 @@ class EditProfile extends StatelessWidget {
                               Icons.search,
                             ),
                             labelText: "Bio",
+                            hintText: bioControllerInitial.text,
                           ),
                         ),
                       ),

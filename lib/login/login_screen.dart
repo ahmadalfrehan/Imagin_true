@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imagin_true/Earth.dart';
 import 'package:imagin_true/main.dart';
-import '../Chat/chat.dart';
 import '../constant.dart';
 import '../register/register_screen.dart';
 import '../sharedHELper.dart';
@@ -18,6 +16,7 @@ class LoginScreen extends StatelessWidget {
   var passController = TextEditingController();
   var ResetpassController = TextEditingController();
   var Scaffoldkey = GlobalKey<ScaffoldState>();
+  bool isAbscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class LoginScreen extends StatelessWidget {
               uId = Shard.sharedprefrences!.getString('uId');
               Timer(
                 const Duration(seconds: 1),
-                    () => main(),
+                () => main(),
               );
               Navigator.pushReplacement(
                 context,
@@ -144,10 +143,21 @@ class LoginScreen extends StatelessWidget {
                           vertical: 10, horizontal: 20),
                       child: TextFormField(
                         decoration: InputDecoration(
+
                             // hoverColor: Colors.green,
+                            suffixIcon: GestureDetector(
+                                onTap: () {
+                                  isAbscure
+                                      ? isAbscure = LoginCubit.get(context)
+                                          .ChangeBool(isAbscure, false)
+                                      : isAbscure = LoginCubit.get(context)
+                                          .ChangeBool(isAbscure, true);
+                                },
+                                child: isAbscure
+                                    ? Icon(Icons.visibility_off)
+                                    : Icon(Icons.visibility)),
                             prefixIcon: const Icon(
                               Icons.lock,
-
                               // color: Colors.teal,
                             ),
                             border: OutlineInputBorder(
@@ -157,6 +167,7 @@ class LoginScreen extends StatelessWidget {
                             filled: true,
                             labelText: 'Password'),
                         controller: passController,
+                        obscureText: isAbscure,
                         keyboardType: TextInputType.text,
                         validator: (String? value) {
                           if (value!.isEmpty) {

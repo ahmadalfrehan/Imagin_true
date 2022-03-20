@@ -21,6 +21,7 @@ class ChatDetailes extends StatelessWidget {
     controllerScrol.jumpTo(controllerScrol.position.maxScrollExtent);
   }
 
+  bool isAutoScrolling = true;
   String s = 'ahmad';
   bool isarabic = false;
 
@@ -52,6 +53,8 @@ class ChatDetailes extends StatelessWidget {
     };
     final headers = {
       'content-type': 'application/json',
+      'Authorization':
+          ''
     };
     try {
       final response = await http.post(
@@ -215,9 +218,12 @@ class ChatDetailes extends StatelessWidget {
               ChatCubit.get(context).getMessages(
                 reciverID: users.uId.toString(),
               );
+              if (isAutoScrolling) {
+                ChatCubit.get(context).scrolltoDown();
+              }
               return Scaffold(
                 appBar: AppBar(
-                  backgroundColor: const Color.fromRGBO(236, 240, 243, 1),
+                  backgroundColor: Colors.blueGrey,
                   elevation: 0,
                   titleSpacing: 0,
                   title: GestureDetector(
@@ -302,32 +308,6 @@ class ChatDetailes extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        left: 320 / 2,
-                        top: 20,
-                        child: Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
                         left: 325,
                         top: 250,
                         child: Container(
@@ -354,305 +334,20 @@ class ChatDetailes extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        //bottom: 259,
-                        right: 101,
-                        left: 102,
-                        top: 236,
+                        left: 32,
+                        top: 600,
                         child: Container(
-                          height: 172,
-                          width: 172,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(41),
-                            border: Border.all(
-                              color: const Color.fromRGBO(245, 245, 255, 1),
-                              width: 2,
-                            ),
-                            color: const Color.fromRGBO(236, 240, 243, 1),
-                          ),
-                          child: Center(
-                            child: InkWell(
-                              onTap: () {},
-                              child: Container(
-                                height: 75,
-                                width: 76,
-                                decoration: BoxDecoration(
-                                  color: const Color.fromRGBO(236, 240, 243, 1),
-                                  borderRadius: BorderRadius.circular(200),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      offset: Offset(3, 10),
-                                      blurRadius: 7,
-                                      spreadRadius: 6,
-                                      blurStyle: BlurStyle.normal,
-                                      color: Color.fromRGBO(151, 167, 195, 0.5),
-                                    ),
-                                    BoxShadow(
-                                      offset: Offset(-10, -20),
-                                      blurRadius: 10,
-                                      spreadRadius: 6,
-                                      blurStyle: BlurStyle.normal,
-                                      color: Color.fromRGBO(252, 252, 252, 1),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      //shadow
-                      Positioned(
-                        left: 130,
-                        right: 128,
-                        top: 229,
-                        child: Container(
-                          height: 1,
-                          width: 290,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(236, 240, 243, 1),
-                            // borderRadius: BorderRadius.all(
-                            // Radius.circular(50),
-                            //),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                                offset: Offset(0, 16),
-                                blurRadius: 6,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 112,
-                        right: 320,
-                        top: 250,
-                        child: Container(
-                          height: 117,
-                          width: 20,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(236, 240, 243, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                                offset: Offset(0, 16),
-                                blurRadius: 6,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 130,
-                        right: 130,
-                        top: 408,
-                        //bottom: 259,
-                        child: Container(
-                          height: 1,
-                          width: 290,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(236, 240, 243, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                                offset: Offset(0, -10),
-                                blurRadius: 6,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 303,
-                        right: 120,
-                        top: 250,
-                        child: Container(
-                          height: 120,
-                          width: 20,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(236, 240, 243, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                                offset: Offset(0, 8),
-                                blurRadius: 6,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //angel
-                      Positioned(
-                        left: 118,
-                        right: 304,
-                        top: 240,
-                        child: Container(
-                          height: 1,
-                          width: 20,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(236, 240, 243, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                                offset: Offset(3, 16),
-                                blurRadius: 9,
-                                spreadRadius: 10,
-                                blurStyle: BlurStyle.normal,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 294,
-                        right: 134,
-                        top: 400,
-                        child: Container(
-                          height: 1,
-                          width: 20,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(236, 240, 243, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                                offset: Offset(0, -12),
-                                blurRadius: 6,
-                                spreadRadius: 10,
-                                blurStyle: BlurStyle.normal,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 427,
-                        right: 342,
-                        child: Container(
-                          height: 96,
-                          width: 97,
+                          height: 150,
+                          width: 150,
                           decoration: BoxDecoration(
                             color: const Color(0xFFECF0F3),
                             borderRadius: BorderRadius.circular(200),
                             boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(0, 3),
-                                blurRadius: 6,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
                               BoxShadow(
                                 offset: Offset(3, 10),
                                 blurRadius: 7,
                                 spreadRadius: 5,
                                 blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 627,
-                        right: 342,
-                        child: Container(
-                          height: 100,
-                          width: 102,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(0, 3),
-                                blurRadius: 6,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 627,
-                        right: 150,
-                        child: Container(
-                          height: 100,
-                          width: 102,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(0, 3),
-                                blurRadius: 6,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 300,
-                        top: 574,
-                        child: Container(
-                          height: 159,
-                          width: 160,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(0, 3),
-                                blurRadius: 6,
                                 color: Color.fromRGBO(151, 167, 195, 0.5),
                               ),
                               BoxShadow(
@@ -743,7 +438,7 @@ class ChatDetailes extends StatelessWidget {
                                           border: InputBorder.none,
                                         ),
                                         controller: chatTextControoler,
-                                        keyboardType: TextInputType.text,
+                                        keyboardType: TextInputType.multiline,
                                         validator: (String? value) {
                                           if (value!.isEmpty) {
                                             return 'the message must not be empty';
@@ -789,6 +484,7 @@ class ChatDetailes extends StatelessWidget {
                                           );
                                           chatTextControoler =
                                               TextEditingController();
+                                          ChatCubit.get(context).file = null;
                                         }
                                       },
                                       child: const Icon(Icons.send_rounded),
@@ -806,16 +502,29 @@ class ChatDetailes extends StatelessWidget {
                   ),
                 ),
                 floatingActionButton: Align(
-                  alignment: const Alignment(0.97, 0.8),
+                  alignment: Alignment(0.97, 0.8),
                   child: FloatingActionButton(
-                    backgroundColor: Colors.black87,
+                    backgroundColor:
+                        !isAutoScrolling ? Colors.black87 : Colors.transparent,
                     onPressed: () {
-                      ChatCubit.get(context).scrolltoDown();
+                      isAutoScrolling
+                          ? isAutoScrolling = ChatCubit.get(context).ChangeVar(
+                              isAutoScrolling,
+                              false,
+                            )
+                          : isAutoScrolling = ChatCubit.get(context).ChangeVar(
+                              isAutoScrolling,
+                              true,
+                            );
                     },
-                    elevation: 5,
-                    mini: true,
-                    child: const Icon(Icons.keyboard_arrow_down,
-                        color: Colors.blueGrey),
+                    elevation: 0,
+                    child: Icon(
+                      isAutoScrolling
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: isAutoScrolling ? Colors.red : Colors.green,
+                      size: 35,
+                    ),
                   ),
                 ),
               );

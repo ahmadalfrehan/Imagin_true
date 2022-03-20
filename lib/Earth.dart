@@ -1,6 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imagin_true/login/login_screen.dart';
 import 'Chat/Cubit/cubit.dart';
 import 'Chat/Cubit/states.dart';
 import 'EditP/EditProfileScreen.dart';
@@ -21,8 +23,51 @@ class Earth extends StatelessWidget {
             appBar: AppBar(
               elevation: 0,
               backgroundColor: const Color(0xFFECF0F3),
-              title: Text(
-                  ChatCubit.get(context).titles[ChatCubit.get(context).Cindex]),
+              title: !FirebaseAuth.instance.currentUser!.emailVerified
+                  ? Container(
+                      height: 60,
+                      color: Colors.amber.withOpacity(0.2),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 2, left: 2),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.info_outline),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            const Expanded(
+                              child: Text(
+                                'verify your account To continue using this app',
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                MaterialButton(
+                                  onPressed: () {
+                                    FirebaseAuth.instance.currentUser!
+                                        .sendEmailVerification();
+                                  },
+                                  child: const Text('Send?'),
+                                ),
+                                MaterialButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('logOut?'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : Text(ChatCubit.get(context)
+                      .titles[ChatCubit.get(context).Cindex]),
               actions: [
                 if (ChatCubit.get(context)
                         .titles[ChatCubit.get(context).Cindex] ==
@@ -72,6 +117,7 @@ class Earth extends StatelessWidget {
               animationDuration: const Duration(milliseconds: 600),
               items: const [
                 Icon(Icons.chat),
+                Icon(Icons.group_rounded),
                 Icon(Icons.contacts),
                 Icon(Icons.person_pin_rounded),
                 Icon(Icons.settings),

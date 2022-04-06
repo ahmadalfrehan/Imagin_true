@@ -28,7 +28,11 @@ void main() async {
   await Firebase.initializeApp();
   PermissionStatus permissionStatus = await getContactPermission();
   await Shard.initial();
-  String? s;
+  WallPaperColor = Shard.sharedprefrences!.getString('ColorWall');
+  if (Shard.sharedprefrences!.getBool('darkMode') != null)
+    isDark = Shard.sharedprefrences!.getBool('darkMode')!;
+  fontSize = Shard.sharedprefrences!.getDouble('FontSized');
+  print(fontSize);
   uId = Shard.sharedprefrences!.getString('uId');
   print(uId);
   Widget widget;
@@ -48,6 +52,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+      darkTheme: isDark
+          ? ThemeData(
+              primarySwatch: Colors.orange,
+              brightness: Brightness.dark,
+            )
+          : ThemeData(
+              primarySwatch: Colors.orange,
+              brightness: Brightness.light,
+            ),
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),

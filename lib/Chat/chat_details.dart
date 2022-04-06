@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imagin_true/Chat/HisProfile.dart';
+import '../constant.dart';
 import '../modulo/chatModel.dart';
 import '../modulo/usersmoder.dart';
 import 'Cubit/cubit.dart';
@@ -24,6 +25,7 @@ class ChatDetailes extends StatelessWidget {
   bool isAutoScrolling = true;
   String s = 'ahmad';
   bool isarabic = false;
+  int Cp = 0xFFECF0F3;
 
   Future<bool> FCM(String userToken, String name) async {
     const postUrl = 'https://fcm.googleapis.com/fcm/send';
@@ -54,7 +56,7 @@ class ChatDetailes extends StatelessWidget {
     final headers = {
       'content-type': 'application/json',
       'Authorization':
-          ''
+          'key=AAAA8m3TVe4:APA91bG-hd_s5UmupukipOSJbfsbhrsDzpgNrfdS_G23uO-BSmHFFjPvW5lIvgb2IjtJjBCxDSNd0t41NLNhKpvSE7ts27E4edFKVoL77f_vMpVhBk3LN3F0KZcji4xs67OAdHec0sWS'
     };
     try {
       final response = await http.post(
@@ -78,6 +80,8 @@ class ChatDetailes extends StatelessWidget {
     return true;
   }
 
+  String wallPaperC = 'Color(0xFFECF0F3)';
+
   @override
   Widget build(BuildContext context) {
     var scaff = ScaffoldMessenger.of(context);
@@ -90,6 +94,13 @@ class ChatDetailes extends StatelessWidget {
         ),
       child: Builder(
         builder: (BuildContext context) {
+          print(S.height);
+          print(S.width);
+          //if(WallPaperColor!=null) wallPaperC = WallPaperColor!.substring(35);
+          //wallPaperC = wallPaperC.substring(6,16);
+          //Cp = int.parse(wallPaperC);
+          //print(Cp);
+          //print(wallPaperC);
           if (ChatCubit.get(context).UU == null) {
             ChatCubit.get(context).getUsers();
           } else {
@@ -218,9 +229,6 @@ class ChatDetailes extends StatelessWidget {
               ChatCubit.get(context).getMessages(
                 reciverID: users.uId.toString(),
               );
-              if (isAutoScrolling) {
-                ChatCubit.get(context).scrolltoDown();
-              }
               return Scaffold(
                 appBar: AppBar(
                   backgroundColor: Colors.blueGrey,
@@ -240,7 +248,9 @@ class ChatDetailes extends StatelessWidget {
                         CircleAvatar(
                           radius: 25,
                           backgroundImage: NetworkImage(
-                            users.ImageProfile.toString(),
+                            users.profilePicturePrivacy != 'No Body'
+                                ? users.ImageProfile.toString()
+                                : defaultProrfilePictures,
                           ),
                         ),
                         SizedBox(
@@ -250,123 +260,22 @@ class ChatDetailes extends StatelessWidget {
                       ],
                     ),
                   ),
-                  toolbarHeight: S.height * 0.08,
+                  toolbarHeight:
+                      S.width >= 700 ? S.height * 0.13 : S.height * 0.08,
                 ),
                 body: Container(
-                  color: const Color.fromRGBO(236, 240, 243, 1),
+                  color: isDark ? Color(0) : Color(0xFFECF0F3),
                   child: Stack(
                     children: [
-                      Align(
-                        alignment: const Alignment(-1, -1),
-                        child: Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(236, 240, 243, 1),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 320,
-                        top: 20,
-                        child: Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 325,
-                        top: 250,
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 32,
-                        top: 600,
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFECF0F3),
-                            borderRadius: BorderRadius.circular(200),
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(3, 10),
-                                blurRadius: 7,
-                                spreadRadius: 5,
-                                blurStyle: BlurStyle.normal,
-                                color: Color.fromRGBO(151, 167, 195, 0.5),
-                              ),
-                              BoxShadow(
-                                offset: Offset(-10, -20),
-                                blurRadius: 10,
-                                color: Color.fromRGBO(252, 252, 252, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.all(17.0),
                         child: Column(
                           children: [
                             Expanded(
                               child: ListView.separated(
+                                reverse: true,
                                 shrinkWrap: true,
-                                controller: ChatCubit.get(context).scroll,
+                                //controller: ChatCubit.get(context).scroll,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount:
                                     ChatCubit.get(context).messages.length,
@@ -430,7 +339,7 @@ class ChatDetailes extends StatelessWidget {
                                         ),
                                         textAlignVertical:
                                             TextAlignVertical.center,
-                                        maxLines: 12,
+                                        maxLines: S.width >= 450 ? 2 : 6,
                                         minLines: 1,
                                         decoration: const InputDecoration(
                                           hintText:
@@ -459,6 +368,7 @@ class ChatDetailes extends StatelessWidget {
                                             reciverID: users.uId as String,
                                             text: chatTextControoler.text,
                                             dateTime: DateTime.now().toString(),
+                                            isRead: false,
                                           );
                                           FCM(
                                             users.Token.toString(),
@@ -474,6 +384,7 @@ class ChatDetailes extends StatelessWidget {
                                             reciverID: users.uId as String,
                                             text: chatTextControoler.text,
                                             dateTime: DateTime.now().toString(),
+                                            isRead: false,
                                           );
                                           FCM(
                                             users.Token.toString(),
@@ -499,32 +410,6 @@ class ChatDetailes extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                floatingActionButton: Align(
-                  alignment: Alignment(0.97, 0.8),
-                  child: FloatingActionButton(
-                    backgroundColor:
-                        !isAutoScrolling ? Colors.black87 : Colors.transparent,
-                    onPressed: () {
-                      isAutoScrolling
-                          ? isAutoScrolling = ChatCubit.get(context).ChangeVar(
-                              isAutoScrolling,
-                              false,
-                            )
-                          : isAutoScrolling = ChatCubit.get(context).ChangeVar(
-                              isAutoScrolling,
-                              true,
-                            );
-                    },
-                    elevation: 0,
-                    child: Icon(
-                      isAutoScrolling
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                      color: isAutoScrolling ? Colors.red : Colors.green,
-                      size: 35,
-                    ),
                   ),
                 ),
               );
@@ -553,16 +438,17 @@ class ChatDetailes extends StatelessWidget {
                   children: [
                     SelectableText(
                       '${t.text}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Raleway',
                         color: Colors.white,
+                        fontSize: fontSize,
                       ),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
-                      '${t.dateTime!.substring(10, 16)}' + '   \u2713',
+                      '${t.dateTime!.substring(10, 16)}',
                       style: const TextStyle(
                         fontFamily: 'Raleway',
                         color: Colors.white,
@@ -570,6 +456,8 @@ class ChatDetailes extends StatelessWidget {
                         fontSize: 9,
                       ),
                     ),
+                    Icon(t.isRead == true ? Icons.check_box_sharp : Icons.check,
+                        size: 10),
                   ],
                 )
               : InkWell(
@@ -635,9 +523,10 @@ class ChatDetailes extends StatelessWidget {
                       ),
                       SelectableText(
                         '${t.text}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Raleway',
                           color: Colors.white,
+                          fontSize: fontSize,
                         ),
                       ),
                       const SizedBox(
@@ -676,9 +565,10 @@ class ChatDetailes extends StatelessWidget {
                   children: [
                     SelectableText(
                       '${t.text}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Raleway',
                         color: Colors.white,
+                        fontSize: fontSize,
                       ),
                     ),
                     const SizedBox(
@@ -698,38 +588,39 @@ class ChatDetailes extends StatelessWidget {
               : InkWell(
                   onTap: () {
                     var e = AlertDialog(
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text(
-                              'cancel',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text(
+                            'cancel',
+                            style: TextStyle(
+                              fontSize: 20,
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
                           ),
-                        ],
-                        shape: BeveledRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        title: const Text("Save File ? "),
-                        content: ElevatedButton(
                           onPressed: () {
-                            ChatCubit.get(context)
-                                .SaveFile(Url: t.Url.toString());
+                            Navigator.of(context).pop();
                           },
-                          child: Row(
-                            children: const [
-                              Icon(Icons.download),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('Save ?'),
-                            ],
-                          ),
-                        ));
+                        ),
+                      ],
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      title: const Text("Save File ? "),
+                      content: ElevatedButton(
+                        onPressed: () {
+                          ChatCubit.get(context)
+                              .SaveFile(Url: t.Url.toString());
+                        },
+                        child: Row(
+                          children: const [
+                            Icon(Icons.download),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text('Save ?'),
+                          ],
+                        ),
+                      ),
+                    );
                     showDialog(context: context, builder: (context) => e);
                   },
                   child: Column(
@@ -758,9 +649,10 @@ class ChatDetailes extends StatelessWidget {
                       ),
                       SelectableText(
                         t.text.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Raleway',
                           color: Colors.white,
+                          fontSize: fontSize,
                         ),
                       ),
                       const SizedBox(

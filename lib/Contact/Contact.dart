@@ -6,6 +6,7 @@ import 'package:imagin_true/Earth.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
+import '../constant.dart';
 
 class Contactss extends StatelessWidget {
   const Contactss({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class Contactss extends StatelessWidget {
           return Scaffold(
             body: ChatCubit.get(context).contactslist != null
                 ? Container(
-                    color: const Color(0xFFECF0F3),
+                    color: isDark ? Color(0) : Color(0xFFECF0F3),
                     child: ListView.builder(
                       itemCount:
                           ChatCubit.get(context).contactslist?.length ?? 0,
@@ -33,6 +34,14 @@ class Contactss extends StatelessWidget {
                         return ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 18),
+                          trailing: Text(
+                            'Invite ?'),
+                          onTap: () {
+
+
+                            ChatCubit.get(context).makeMessage(
+                                ChatCubit.get(context).phones.elementAt(index));
+                          },
                           leading: (contact!.avatar != null &&
                                   contact.avatar!.isNotEmpty)
                               ? CircleAvatar(

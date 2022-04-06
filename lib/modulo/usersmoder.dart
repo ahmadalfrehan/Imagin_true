@@ -7,18 +7,27 @@ class UsersModel {
   String? Cover;
   String? Bio;
   String? Token;
-  bool? isEmailVerifaed;
+  String? phoneNumberPrivacy;
+  String? emailAddressPrivacy;
+  String? BioPrivacy;
+  String? profilePicturePrivacy;
+  String? coverPicturePrivacy;
 
-  UsersModel(
-      {this.email,
-      this.name,
-      this.phone,
-      this.uId,
-      this.isEmailVerifaed,
-      this.Bio,
-      this.Token,
-      this.ImageProfile,
-      this.Cover});
+  UsersModel({
+    this.email,
+    this.name,
+    this.phone,
+    this.uId,
+    this.BioPrivacy,
+    this.Bio,
+    this.Token,
+    this.phoneNumberPrivacy,
+    this.emailAddressPrivacy,
+    this.coverPicturePrivacy,
+    this.profilePicturePrivacy,
+    this.ImageProfile,
+    this.Cover,
+  });
 
   UsersModel.fromJson(Map<String, dynamic> json) {
     email = json['email'];
@@ -29,7 +38,11 @@ class UsersModel {
     Cover = json['Cover'];
     Bio = json['Bio'];
     Token = json['Token'];
-    isEmailVerifaed = json['isEmailVerifaed'];
+    phoneNumberPrivacy = json['phoneNumberPrivacy'];
+    emailAddressPrivacy = json['emailAddressPrivacy'];
+    BioPrivacy = json['BioPrivacy'];
+    profilePicturePrivacy = json['profilePicturePrivacy'];
+    coverPicturePrivacy = json['coverPicturePrivacy'];
   }
 
   Map<String, dynamic> toMap() {
@@ -42,7 +55,11 @@ class UsersModel {
       'Cover': Cover,
       'Bio': Bio,
       'Token': Token,
-      'isEmailVerifaed': isEmailVerifaed,
+      'phoneNumberPrivacy': phoneNumberPrivacy,
+      'emailAddressPrivacy': emailAddressPrivacy,
+      'BioPrivacy': BioPrivacy,
+      'profilePicturePrivacy': profilePicturePrivacy,
+      'coverPicturePrivacy': coverPicturePrivacy,
     };
   }
 }

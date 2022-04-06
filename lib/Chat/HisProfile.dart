@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
+import '../constant.dart';
 import '../modulo/usersmoder.dart';
 
 class HisProfile extends StatelessWidget {
@@ -17,6 +18,8 @@ class HisProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     var scaff = ScaffoldMessenger.of(context);
+    print(size.height);
+    print(size.width);
     return BlocProvider(
       create: (BuildContext context) => ChatCubit()..getUsers(),
       child: BlocConsumer<ChatCubit, SocialStates>(
@@ -80,10 +83,10 @@ class HisProfile extends StatelessWidget {
           if (UserModell != null) {}
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: const Color.fromRGBO(236, 240, 243, 1),
+              backgroundColor: isDark ? Color(0xff) : Color(0xFFECF0F3),
             ),
             body: Container(
-              color: const Color.fromRGBO(236, 240, 243, 1),
+              color: isDark ? Color(0xff) : Color(0xFFECF0F3),
               child: ListView(
                 children: [
                   if (state is SocialUpdateUserLoadingStates)
@@ -102,7 +105,11 @@ class HisProfile extends StatelessWidget {
                             height: 200,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(users.Cover.toString()),
+                                image: NetworkImage(
+                                  users.coverPicturePrivacy != 'No Body'
+                                      ? users.Cover.toString()
+                                      : defaultCoverPictures,
+                                ),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: const BorderRadius.only(
@@ -113,8 +120,11 @@ class HisProfile extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              ChatCubit.get(context)
-                                  .SaveFile(Url: users.Cover.toString());
+                              ChatCubit.get(context).SaveFile(
+                                Url: users.coverPicturePrivacy != 'No Body'
+                                    ? users.Cover.toString()
+                                    : defaultCoverPictures,
+                              );
                             },
                             child: const CircleAvatar(
                               child: Icon(Icons.download),
@@ -123,9 +133,13 @@ class HisProfile extends StatelessWidget {
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.only(
-                            top: (size.width * 0.3) - 1,
-                            left: (size.width * 0.34) - 10),
+                        margin: size.width >= 500
+                            ? EdgeInsets.only(
+                                top: (size.width * 0.15) - 1,
+                                left: (size.width * 0.4) - 10)
+                            : EdgeInsets.only(
+                                top: (size.width * 0.3) - 1,
+                                left: (size.width * 0.32) - 10),
                         child: Stack(
                           alignment: AlignmentDirectional.bottomEnd,
                           children: [
@@ -133,14 +147,21 @@ class HisProfile extends StatelessWidget {
                               radius: 84,
                               backgroundColor: Colors.white,
                               child: CircleAvatar(
-                                  radius: 80,
-                                  backgroundImage: NetworkImage(
-                                      users.ImageProfile.toString())),
+                                radius: 80,
+                                backgroundImage: NetworkImage(
+                                  users.profilePicturePrivacy != 'No Body'
+                                      ? users.ImageProfile.toString()
+                                      : defaultProrfilePictures,
+                                ),
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
                                 ChatCubit.get(context).SaveFile(
-                                    Url: users.ImageProfile.toString());
+                                    Url:
+                                        users.profilePicturePrivacy != 'No Body'
+                                            ? users.ImageProfile.toString()
+                                            : defaultProrfilePictures);
                               },
                               child: const CircleAvatar(
                                 child: Icon(Icons.download),
@@ -153,6 +174,9 @@ class HisProfile extends StatelessWidget {
                   ),
                   Column(
                     children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -166,79 +190,118 @@ class HisProfile extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        users.Bio.toString(),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
+                      if (users.BioPrivacy != 'No Body')
+                        Text(
+                          users.Bio.toString(),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         height: 30,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  border:
-                                      Border.all(color: Colors.black, width: 1),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 30,
+                      if (users.phoneNumberPrivacy != 'No Body')
+                        GestureDetector(
+                          onTap: () {
+                            ChatCubit.get(context)
+                                .makePhoneCall(users.phone.toString());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      border: Border.all(
+                                          color: !isDark
+                                              ? Colors.black
+                                              : Color(0xFFECF0F3),
+                                          width: 1),
                                     ),
-                                    const Icon(Icons.phone),
-                                    const SizedBox(
-                                      width: 30,
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 30,
+                                        ),
+                                        const Icon(Icons.phone),
+                                        const SizedBox(
+                                          width: 30,
+                                        ),
+                                        SelectableText(
+                                          users.phone.toString(),
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SelectableText(users.phone.toString()),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         height: 30,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  border:
-                                      Border.all(color: Colors.black, width: 1),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 30,
+                      if (users.emailAddressPrivacy != 'No Body')
+                        GestureDetector(
+                          onTap: () {
+                            ChatCubit.get(context)
+                                .makeEmailCall(users.email.toString());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      border: Border.all(
+                                          color: !isDark
+                                              ? Colors.black
+                                              : Color(0xFFECF0F3),
+                                          width: 1),
                                     ),
-                                    const Icon(Icons.email),
-                                    const SizedBox(
-                                      width: 30,
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 30,
+                                        ),
+                                        const Icon(Icons.email),
+                                        const SizedBox(
+                                          width: 30,
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            ChatCubit.get(context)
+                                                .makeEmailCall(
+                                                    users.email.toString());
+                                          },
+                                          child: SelectableText(
+                                            users.email.toString(),
+                                            style: TextStyle(
+                                              color: Colors.lightBlue,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SelectableText(users.email.toString()),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
                     ],
                   )
                 ],

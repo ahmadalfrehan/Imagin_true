@@ -3,6 +3,7 @@ class ChatModel {
   String? reciverID;
   String? SenderID;
   String? dateTime;
+  bool? isRead;
   String? Url;
 
   ChatModel({
@@ -10,6 +11,7 @@ class ChatModel {
     this.reciverID,
     this.SenderID,
     this.dateTime,
+    this.isRead,
     this.Url,
   });
 
@@ -18,6 +20,7 @@ class ChatModel {
     reciverID = json['reciverID'];
     SenderID = json['SenderID'];
     dateTime = json['dateTime'];
+    isRead = json['isRead'];
     Url = json['Url'];
   }
 
@@ -27,6 +30,7 @@ class ChatModel {
       'reciverID': reciverID,
       'SenderID': SenderID,
       'dateTime': dateTime,
+      'isRead': isRead,
       'Url': Url,
     };
   }

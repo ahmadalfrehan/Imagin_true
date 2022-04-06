@@ -45,9 +45,13 @@ class SettingScreen extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.only(
+                            margin: size.width >= 500
+                                ? EdgeInsets.only(
+                                top: (size.width * 0.15) - 1,
+                                left: (size.width * 0.4) - 10)
+                                : EdgeInsets.only(
                                 top: (size.width * 0.3) - 1,
-                                left: (size.width * 0.34) - 10),
+                                left: (size.width * 0.32) - 10),
                             child: CircleAvatar(
                               radius: 84,
                               backgroundColor: Colors.white,
@@ -64,6 +68,7 @@ class SettingScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

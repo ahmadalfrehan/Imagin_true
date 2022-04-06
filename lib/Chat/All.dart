@@ -1,6 +1,7 @@
 import 'package:imagin_true/Chat/Cubit/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../constant.dart';
 import '../login/login_screen.dart';
 import '../modulo/usersmoder.dart';
 import 'Cubit/cubit.dart';
@@ -28,7 +29,7 @@ class AllU extends StatelessWidget {
           }
           return Scaffold(
             body: Container(
-              color: Color(0xFFECF0F3),
+              color:!isDark? Color(0xFFECF0F3):Color(0xff),
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
                 itemCount: ChatCubit.get(context).Allusers.length,

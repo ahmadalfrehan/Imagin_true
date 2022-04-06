@@ -6,6 +6,7 @@ import 'package:imagin_true/login/login_screen.dart';
 import 'Chat/Cubit/cubit.dart';
 import 'Chat/Cubit/states.dart';
 import 'EditP/EditProfileScreen.dart';
+import 'constant.dart';
 
 class Earth extends StatelessWidget {
   const Earth({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class Earth extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: const Color(0xFFECF0F3),
+              backgroundColor: isDark ? Color(0xff) : Color(0xFFECF0F3),
               title: !FirebaseAuth.instance.currentUser!.emailVerified
                   ? Container(
                       height: 60,
@@ -66,8 +67,12 @@ class Earth extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Text(ChatCubit.get(context)
-                      .titles[ChatCubit.get(context).Cindex]),
+                  : Text(
+                      ChatCubit.get(context)
+                          .titles[ChatCubit.get(context).Cindex],
+                      style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black),
+                    ),
               actions: [
                 if (ChatCubit.get(context)
                         .titles[ChatCubit.get(context).Cindex] ==
@@ -101,7 +106,7 @@ class Earth extends StatelessWidget {
               ],
             ),
             body: Container(
-              color: const Color(0xFFECF0F3),
+              color: isDark ? Color(0) : Color(0xFFECF0F3),
               child:
                   ChatCubit.get(context).screens[ChatCubit.get(context).Cindex],
             ),
@@ -110,9 +115,10 @@ class Earth extends StatelessWidget {
               onTap: (index) {
                 ChatCubit.get(context).ChangeBottomSheet(index);
               },
-              color: Colors.white,
-              buttonBackgroundColor: Colors.white,
-              backgroundColor: const Color(0xFFECF0F3),
+              color: isDark ? Colors.grey.shade700 : Colors.white,
+              //color: Colors.white,
+              buttonBackgroundColor: isDark ? Colors.black : Colors.white,
+              backgroundColor: isDark ? Color(0xff) : Color(0xFFECF0F3),
               animationCurve: Curves.easeInOut,
               animationDuration: const Duration(milliseconds: 600),
               items: const [

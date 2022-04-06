@@ -40,6 +40,10 @@ class SocialImagePickedProfileSuccessStates extends SocialStates {}
 
 class SocialImagePickedProfileErrorStates extends SocialStates {}
 
+class SocialImagePickedWallPaperSuccessStates extends SocialStates {}
+
+class SocialImagePickedWallPaperErrorStates extends SocialStates {}
+
 class SocialImagePickedCoverSuccessStates extends SocialStates {}
 
 class SocialImagePickedCoverErrorStates extends SocialStates {}
@@ -116,6 +120,8 @@ class SocialGetMessageErrorStates extends SocialStates {
   SocialGetMessageErrorStates(this.error);
 }
 
+class SocialUpdateMessageSuccessStates extends SocialStates {}
+
 class SocialGetContactsSuccessStates extends SocialStates {}
 
 class SocialChangeLTRSuccessStates extends SocialStates {}
@@ -133,5 +139,16 @@ class SocialDownLoadFileSavedStates extends SocialStates {}
 class SocialDownLoadFileSavedErrorStates extends SocialStates {}
 
 class SocialChangeFontSuccessStates extends SocialStates {}
+
 class SocialisAutoScrollingStates extends SocialStates {}
+
 class SocialChangeVarStates extends SocialStates {}
+
+class SocialUpdateUserPrivacyLoadingStates extends SocialStates {}
+
+class SocialUpdateUserPrivacySuccessStates extends SocialStates {}
+
+class SocialUpdateUserPrivacyErrorStates extends SocialStates {}
+
+class SocialmakePhoneCallStates extends SocialStates {}
+class SocialChangeDarkModeStates extends SocialStates {}

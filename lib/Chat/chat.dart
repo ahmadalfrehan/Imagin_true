@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../login/login_screen.dart';
+import '../constant.dart';
 import '../modulo/usersmoder.dart';
 import 'Cubit/cubit.dart';
 import 'Cubit/states.dart';
@@ -16,46 +17,47 @@ class Chat extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => ChatCubit()
         ..getUsers()
-        ..getContacts()
         ..getUsersAll(),
-      child: BlocConsumer<ChatCubit, SocialStates>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state is SocialGetAllUserLoadingStates) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (ChatCubit.get(context).users.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'There is no users in your contacts using this app',
-                  style: TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
+      child: Builder(builder: (BuildContext context) {
+        return BlocConsumer<ChatCubit, SocialStates>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is SocialGetAllUserLoadingStates) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (ChatCubit.get(context).users.isEmpty) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'There is no users in your contacts using this app',
+                    style: TextStyle(
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+            }
+            return Scaffold(
+              body: Container(
+                color:isDark?Color(0): Color(0xFFECF0F3),
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: ChatCubit.get(context).users.length,
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemBuilder: (context, index) => INK(
+                    ChatCubit.get(context).users[index],
+                    context,
                   ),
                 ),
               ),
             );
-          }
-          return Scaffold(
-            body: Container(
-              color: Color(0xFFECF0F3),
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                itemCount: ChatCubit.get(context).users.length,
-                separatorBuilder: (context, index) => const Divider(),
-                itemBuilder: (context, index) => INK(
-                  ChatCubit.get(context).users[index],
-                  context,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+          },
+        );
+      }),
     );
   }
 
@@ -78,15 +80,23 @@ class Chat extends StatelessWidget {
               ),
               CircleAvatar(
                 radius: 45,
-                backgroundImage: NetworkImage(users.ImageProfile.toString()),
+                backgroundImage: NetworkImage(
+                  users.profilePicturePrivacy != 'No Body'
+                      ? users.ImageProfile.toString()
+                      : defaultProrfilePictures,
+                ),
               ),
               const SizedBox(
                 width: 8,
               ),
-              Text(
-                users.name.toString(),
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              Column(
+                children: [
+                  Text(
+                    users.name.toString(),
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ],
           ),

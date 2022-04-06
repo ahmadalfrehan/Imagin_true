@@ -18,12 +18,12 @@ import 'package:imagin_true/Contact/Contact.dart';
 import 'package:imagin_true/settings/Sett.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../Earth.dart';
 import '../../constant.dart';
 import '../../modulo/chatModel.dart';
 import '../../modulo/usersmoder.dart';
 import '../../settings/Settings.dart';
 import '../../sharedHELper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatCubit extends Cubit<SocialStates> {
   ChatCubit() : super(SocialInitialStates());
@@ -44,7 +44,7 @@ class ChatCubit extends Cubit<SocialStates> {
     AllU(),
     const Contactss(),
     const SettingScreen(),
-    const SettingsS(),
+    SettingsS(),
   ];
   int Cindex = 0;
 
@@ -122,14 +122,17 @@ class ChatCubit extends Cubit<SocialStates> {
     required String reciverID,
     required String text,
     required String dateTime,
+    required bool isRead,
     String? Url,
   }) {
     ChatModel modelChat = ChatModel(
-        text: text,
-        SenderID: UU!.uId as String,
-        reciverID: reciverID,
-        dateTime: dateTime,
-        Url: Url ?? "");
+      text: text,
+      SenderID: UU!.uId as String,
+      reciverID: reciverID,
+      dateTime: dateTime,
+      isRead: isRead,
+      Url: Url ?? "",
+    );
     FirebaseFirestore.instance
         .collection('chatusers')
         .doc(UU!.uId)
@@ -168,7 +171,7 @@ class ChatCubit extends Cubit<SocialStates> {
         .collection('chats')
         .doc(reciverID)
         .collection('messages')
-        .orderBy('dateTime')
+        .orderBy('dateTime', descending: true)
         .snapshots()
         .listen((event) {
       messages = [];
@@ -179,28 +182,87 @@ class ChatCubit extends Cubit<SocialStates> {
     });
   }
 
-  List latestMesaage = [];
+/*
+  List<String> s = [];
 
-  /*getLatestMessage() {
-    FirebaseFirestore.instance.collection('chatusers').get().then((value) {
+  void Fill({required String reciverID}) {
+    FirebaseFirestore.instance
+        .collection('chatusers')
+        .doc(UU?.uId)
+        .collection('chats')
+        .doc(reciverID)
+        .collection('messages')
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
-        FirebaseFirestore.instance
-            .collection('chatusers')
-            .doc(UU?.uId)
-            .collection('chats')
-            .doc(element.data()['uId'])
-            .collection('messages')
-            .orderBy('dateTime')
-            .snapshots()
-            .listen((event) {
-          event.docs.forEach((element) {
-            latestMesaage.add(ChatModel.fromJson(element.data()));
-          });
-        });
+        s.add(element.id);
+      });
+      print(s);
+    });
+  }
+
+  void UpdateMessages({
+    required String text,
+    required String dateTime,
+    required String reciverID,
+    required bool isRead,
+  }) {
+    Fill(reciverID: reciverID);
+    print('llflfll');
+    ChatModel c = ChatModel(
+      reciverID: reciverID,
+      text: text,
+      SenderID: UU?.uId as String,
+      dateTime: dateTime,
+      isRead: isRead,
+      Url: '',
+    );
+    print('n+1');
+    for (int i = 0; i < s.length; i++) {
+      FirebaseFirestore.instance
+          .collection('chatusers')
+          .doc(UU?.uId)
+          .collection('chats')
+          .doc(reciverID)
+          .collection('messages')
+          .doc(s[i].toString())
+          .update({'isRead':true})
+          .then((value) {
+        print('success');
+        emit(SocialUpdateMessageSuccessStates());
+        getMessages(reciverID: reciverID);
+        print('Successsssss');
+      }).catchError((onError) {
+        print(onError);
+      });
+    }
+  }
+
+  List latestMesaage = [];
+  List latestMesaage2 = [];
+
+  getLatestMessage({required String reciverID}) {
+    emit(SocialGetMessageSuccessStates());
+    FirebaseFirestore.instance
+        .collection('chatusers')
+        .doc(UU?.uId)
+        .collection('chats')
+        .doc(reciverID)
+        .collection('messages')
+        .orderBy('dateTime', descending: true)
+        .limit(1)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        latestMesaage2.add(UsersModel.fromJson(element.data()));
       });
     });
-  }*/
+  }
 
+  void ClearWithMix() {
+    print(latestMesaage2);
+  }
+*/
   var imageProfile;
   final Picker = ImagePicker();
 
@@ -224,6 +286,17 @@ class ChatCubit extends Cubit<SocialStates> {
       imageCover = File(Pac.path);
     } else {
       emit(SocialImagePickedCoverErrorStates());
+      print('no imageCovered Selected');
+    }
+  }
+
+  GetWallPaperImage(ImageSource sre) async {
+    final Pac = await Picker.pickImage(source: sre);
+    emit(SocialImagePickedWallPaperSuccessStates());
+    if (Pac != null) {
+      imageCover = File(Pac.path);
+    } else {
+      emit(SocialImagePickedWallPaperErrorStates());
       print('no imageCovered Selected');
     }
   }
@@ -273,7 +346,6 @@ class ChatCubit extends Cubit<SocialStates> {
     });
   }
 
-  //var token = FirebaseMessaging.instance.getToken();
   void UpdateUser({
     required String name,
     required String phone,
@@ -290,8 +362,12 @@ class ChatCubit extends Cubit<SocialStates> {
         uId: UU!.uId,
         Cover: CoverImageUrl ?? UU!.Cover,
         ImageProfile: PrifileImageUrl ?? UU!.ImageProfile,
-        isEmailVerifaed: false,
         Token: token.toString(),
+        phoneNumberPrivacy: UU?.phoneNumberPrivacy,
+        emailAddressPrivacy: UU?.emailAddressPrivacy,
+        profilePicturePrivacy: UU?.profilePicturePrivacy,
+        coverPicturePrivacy: UU?.coverPicturePrivacy,
+        BioPrivacy: UU?.BioPrivacy,
       );
       FirebaseFirestore.instance
           .collection('chatusers')
@@ -303,6 +379,47 @@ class ChatCubit extends Cubit<SocialStates> {
         print(onError.toString());
       });
     }
+  }
+
+  String? privacySelectionProfilePicture;
+  String? privacySelectionEmailAddress;
+  String? privacySelectionPhoneNumber;
+  String? privacySelectionBio;
+  String? privacySelectionCoverPictures;
+
+  void UpdateUserPrivacy() async {
+    var token = await FirebaseMessaging.instance.getToken();
+    print(UU);
+    emit(SocialUpdateUserPrivacyLoadingStates());
+    UsersModel UserModelUpdatePrivacy = UsersModel(
+      name: UU!.name,
+      phone: UU!.phone,
+      Bio: UU!.Bio,
+      email: UU!.email,
+      uId: UU!.uId,
+      Cover: CoverImageUrl ?? UU!.Cover,
+      ImageProfile: PrifileImageUrl ?? UU!.ImageProfile,
+      Token: token.toString(),
+      BioPrivacy: privacySelectionBio ?? UU?.BioPrivacy,
+      coverPicturePrivacy:
+          privacySelectionCoverPictures ?? UU?.coverPicturePrivacy,
+      profilePicturePrivacy:
+          privacySelectionProfilePicture ?? UU?.profilePicturePrivacy,
+      emailAddressPrivacy:
+          privacySelectionEmailAddress ?? UU?.emailAddressPrivacy,
+      phoneNumberPrivacy: privacySelectionPhoneNumber ?? UU?.phoneNumberPrivacy,
+    );
+    FirebaseFirestore.instance
+        .collection('chatusers')
+        .doc(uId)
+        .update(UserModelUpdatePrivacy.toMap())
+        .then((value) {
+      emit(SocialUpdateUserPrivacySuccessStates());
+      getUsers();
+    }).catchError((onError) {
+      emit(SocialUpdateUserPrivacyErrorStates());
+      print(onError.toString());
+    });
   }
 
   var PostImagee;
@@ -356,13 +473,18 @@ class ChatCubit extends Cubit<SocialStates> {
 
   var dio = Dio();
 
+  String generateRandomString(int len) {
+    var r = Random();
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+        .join();
+  }
+
   SaveFile({required String Url}) {
     emit(SocialDownLoadFileLoadingStates());
-    var r = Random();
-    String name =
-        String.fromCharCodes(List.generate(10, (index) => r.nextInt(65) + 90));
-    name = name.trim().replaceAll('\\', 'k');
-    name = name.trim().replaceAll('|', 'l');
+
+    String name = generateRandomString(26);
     print(name);
     emit(SocialDownLoadFileSavedStates());
     String type = Url.split('.').last.substring(0, 3);
@@ -379,9 +501,9 @@ class ChatCubit extends Cubit<SocialStates> {
 
   void isArabic(String s) {
     for (int i = 0; i < s.length; i++) {
-      int c = s.codeUnitAt(i);
+      List<int> c = s.codeUnits;
       emit(SocialChangeLTRSuccessStates());
-      if (c >= 0x0600 && c <= 0x06E0) {
+      if (c[0] >= 1575 && c[0] <= 1610) {
         isarabic = true;
       } else {
         isarabic = false;
@@ -395,6 +517,7 @@ class ChatCubit extends Cubit<SocialStates> {
     required String reciverID,
     required String text,
     required String dateTime,
+    required bool isRead,
   }) {
     emit(SocialUploadFileLoadingStates());
     FirebaseStorage.instance
@@ -408,6 +531,7 @@ class ChatCubit extends Cubit<SocialStates> {
           reciverID: reciverID,
           text: text,
           dateTime: dateTime,
+          isRead: isRead,
           Url: value,
         );
         emit(SocialUploadFileSuccessStates());
@@ -422,26 +546,51 @@ class ChatCubit extends Cubit<SocialStates> {
     });
   }
 
-  double? FontSized; //Shard.getData(key: 'FontSized');
-  List<double> fontS = [
-    10,
-    22,
-    30,
-    40,
-    60,
-    80,
-    90,
-    100,
-  ];
+  double? FontSized;
+  List<double> fontS = [10, 22, 30, 40, 60, 80, 90, 100];
+  List<String> Phone = ['Every Body', 'No Body'];
+
+  List<String> profilePictures = ['Every Body', 'No Body'];
+
+  List<String> coverPictures = ['Every Body', 'No Body'];
+
+  List<String> Bio = ['Every Body', 'No Body'];
+
+  List<String> emailAdr = ['Every Body', 'No Body'];
 
   void ChangeFont(double val) async {
-    FontSized = val;
+    fontSize = val;
     emit(SocialChangeFontSuccessStates());
     await Shard.saveData(
       key: 'FontSized',
-      value: FontSized,
+      value: fontSize,
     );
     print('fontSvaed');
+  }
+
+  void ChangeVarPrivacyEmailAddress(String val) async {
+    privacySelectionEmailAddress = val;
+    emit(SocialChangeVarStates());
+  }
+
+  void ChangeVarPrivacyProfilePicture(String val) async {
+    privacySelectionProfilePicture = val;
+    emit(SocialChangeVarStates());
+  }
+
+  void ChangeVarPrivacyPhoneNumber(String val) async {
+    privacySelectionPhoneNumber = val;
+    emit(SocialChangeVarStates());
+  }
+
+  void ChangeVarPrivacyBio(String val) async {
+    privacySelectionBio = val;
+    emit(SocialChangeVarStates());
+  }
+
+  void ChangeVarPrivacyCoverPictures(String val) async {
+    privacySelectionCoverPictures = val;
+    emit(SocialChangeVarStates());
   }
 
   bool isS = true;
@@ -449,11 +598,12 @@ class ChatCubit extends Cubit<SocialStates> {
 
   void scrolltoDown() {
     emit(SocialisAutoScrollingStates());
-      if (scroll.hasClients) {
-        scroll.jumpTo(scroll.position.maxScrollExtent);
+    if (scroll.hasClients) {
+      scroll.jumpTo(scroll.position.maxScrollExtent);
     }
   }
-  bool ChangeVar(var x,var y){
+
+  bool ChangeVar(var x, var y) {
     emit(SocialChangeVarStates());
     print(y);
     x = y;
@@ -461,12 +611,59 @@ class ChatCubit extends Cubit<SocialStates> {
     return x;
   }
 
-  void scrolltoTop(bool isAutoScrolling) {
+  void scrollToTop(bool isAutoScrolling) {
     emit(SocialisAutoScrollingStates());
     if (isAutoScrolling) {
       if (scroll.hasClients) {
         scroll.jumpTo(scroll.position.minScrollExtent);
       }
     }
+  }
+
+  Future<void> makePhoneCall(String phoneNumber) async {
+    emit(SocialmakePhoneCallStates());
+    final LaunchUrl = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launch(LaunchUrl.toString());
+  }
+
+  makeEmailCall(String emailAd) async {
+    emit(SocialmakePhoneCallStates());
+    final LaunchUrl = Uri(
+      scheme: 'mailto',
+      path: emailAd,
+    );
+    await launch(LaunchUrl.toString());
+  }
+
+  String? encodeQueryParametr(Map<String, String> params) {
+    return params.entries
+        .map((e) =>
+            '${Uri.encodeComponent(e.key)} = ${Uri.encodeComponent(e.value)}')
+        .join('&');
+  }
+
+  LaunchUrl(String Url) async {
+    emit(SocialmakePhoneCallStates());
+    await launch(Url);
+  }
+
+  makeMessage(String phoneNumber) async {
+    emit(SocialmakePhoneCallStates());
+    final LaunchUrl =
+        'sms:${phoneNumber}?body=hello%20there i\'m using imagin_true to chat - We invite you to join us! Get it on google play :https://play.google.com/store/apps/details?id=com.ahmad_alfrehan.imagin_true';
+    await launch(LaunchUrl.toString());
+  }
+
+  void SavedDark(bool? ISDark, bool value) async {
+    ISDark = value;
+    emit(SocialChangeDarkModeStates());
+    await Shard.saveData(
+      key: 'darkMode',
+      value: ISDark,
+    );
+    print('DarkSuc');
   }
 }

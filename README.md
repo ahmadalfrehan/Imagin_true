@@ -1,16 +1,17 @@
 # imagin_true
 
-A new Flutter project.
+## it is a chat app
+imagin_true is a chat app
+. By using it you can chat with friends and other users
+also it is support notifications and send or receive photos or videos or any other files you want
+in addition you can save your files localy in your phone
+first of all you need to create an account using email to using this app and it is required a phone number to communicate with your contacts who using the app
+also you can edit your profile Which contains profile picture and cover picture and bio and your phone number and your name ...
+also it is support
+Add dark mode and privacy and ability to change font size and other features
+and it is very responsive with all screens
+if you cannot find your friend in contacts screen you will find them in "all users" screen
+which you can talk with any person that is not in your contacts
+finally You can contact us if you have any problems
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: get it on google play](https://play.google.com/store/apps/details?id=com.ahmad_alfrehan.imagin_true)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [get it on google play](https://play.google.com/store/apps/details?id=com.ahmad_alfrehan.imagin_true)

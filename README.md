@@ -12,6 +12,6 @@ Add dark mode and privacy and ability to change font size and other features
 and it is very responsive with all screens
 if you cannot find your friend in contacts screen you will find them in "all users" screen
 which you can talk with any person that is not in your contacts
-finally You can contact us if you have any problems
+finally You can contact us if you have any problems.
 
 - [get it on google play](https://play.google.com/store/apps/details?id=com.ahmad_alfrehan.imagin_true)

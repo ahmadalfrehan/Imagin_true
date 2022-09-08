@@ -1,16 +1,15 @@
-import 'package:contacts_service/contacts_service.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:imagin_true/Earth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:imagin_true/sharedHELper.dart';
+import 'package:imagin_true/presentation/sharedHELper.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'Chat/Cubit/cubit.dart';
-import 'Chat/Cubit/states.dart';
-import 'constant.dart';
-import 'login/login_screen.dart';
+
+import 'app/Config/Config.dart';
+import 'presentation/Chat/Cubit/cubit.dart';
+import 'presentation/Chat/Cubit/states.dart';
+import 'presentation/Home/HomeScreen.dart';
+import 'presentation/login/login_screen.dart';
 
 Future<PermissionStatus> getContactPermission() async {
   PermissionStatus permission = await Permission.contacts.status;
@@ -35,20 +34,13 @@ void main() async {
   print(fontSize);
   uId = Shard.sharedprefrences!.getString('uId');
   print(uId);
-  Widget widget;
-  if (uId != null && permissionStatus == PermissionStatus.granted) {
-    widget = const Earth();
-  } else {
-    widget = LoginScreen();
+  if (permissionStatus == PermissionStatus.granted) {
+    uId = null;
   }
-  runApp(MyApp(widget));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  Widget widget;
-
-  MyApp(this.widget);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,7 +58,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
       ),
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(this.widget),
+      home: uId != null ? Earth() : LoginScreen(),
     );
   }
 }

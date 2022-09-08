@@ -1,29 +1,30 @@
 import 'dart:core';
 import 'dart:io';
 import 'dart:math';
-import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:imagin_true/Chat/All.dart';
-import 'package:path/path.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:imagin_true/Chat/All.dart';
 import 'package:imagin_true/Chat/Cubit/states.dart';
 import 'package:imagin_true/Chat/chat.dart';
 import 'package:imagin_true/Contact/Contact.dart';
 import 'package:imagin_true/settings/Sett.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../constant.dart';
 import '../../modulo/chatModel.dart';
 import '../../modulo/usersmoder.dart';
 import '../../settings/Settings.dart';
 import '../../sharedHELper.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ChatCubit extends Cubit<SocialStates> {
   ChatCubit() : super(SocialInitialStates());
@@ -454,8 +455,9 @@ class ChatCubit extends Cubit<SocialStates> {
 
   void getFiles() async {
     //CreateFolder();
-    FilePickerResult result =
-        await FilePicker.platform.pickFiles() as FilePickerResult;
+    var result;
+    //FilePickerResult result =
+      //  await FilePicker.platform.pickFiles() as FilePickerResult;
     if (result != null) {
       file = File(result.files.single.path.toString());
       print(file!.path);

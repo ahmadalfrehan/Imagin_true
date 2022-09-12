@@ -92,14 +92,13 @@ class RegisterScreen extends StatelessWidget {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: MaterialButton(
                           height: 50,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           minWidth: double.infinity,
-                          color:isDark?Colors.grey.shade800: Colors.orange,
+                          color: isDark ? Colors.grey.shade800 : Colors.orange,
                           child: const Text(
                             "Sign Up",
                             style: TextStyle(

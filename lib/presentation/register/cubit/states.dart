@@ -8,6 +8,7 @@ class RegisterLoadingState extends RegisterStates {}
 
 class RegisterSuccessState extends RegisterStates {
   ResponseFromModel responseFromModel;
+
   RegisterSuccessState(this.responseFromModel);
 }
 

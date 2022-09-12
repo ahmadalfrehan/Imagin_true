@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +8,6 @@ import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
 
 class EditProfile extends StatelessWidget {
-
   var nameController = TextEditingController();
   var phoneController = TextEditingController();
   var bioController = TextEditingController();
@@ -208,7 +208,6 @@ class EditProfile extends StatelessWidget {
                               borderSide: const BorderSide(
                                   color: Colors.green, width: 2.0),
                             ),
-
                             filled: true,
                             prefixIcon: const Icon(
                               Icons.search,

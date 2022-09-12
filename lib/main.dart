@@ -34,8 +34,12 @@ void main() async {
   print(fontSize);
   uId = Shard.sharedprefrences!.getString('uId');
   print(uId);
-  if (permissionStatus == PermissionStatus.granted) {
+  print(PermissionStatus.granted);
+  print(permissionStatus);
+  print(permissionStatus);
+  if (permissionStatus != PermissionStatus.granted) {
     uId = null;
+    print('object');
   }
   runApp(MyApp());
 }
@@ -44,6 +48,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       darkTheme: isDark
           ? ThemeData(
@@ -57,7 +62,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      debugShowCheckedModeBanner: false,
       home: uId != null ? Earth() : LoginScreen(),
     );
   }

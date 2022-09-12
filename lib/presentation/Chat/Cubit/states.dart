@@ -1,3 +1,5 @@
+import '../../../data/model/UsersModel.dart';
+
 abstract class SocialStates {}
 
 class SocialInitialStates extends SocialStates {}
@@ -14,7 +16,10 @@ class SocialGetUserErrorStates extends SocialStates {
 
 class SocialGetAllUserLoadingStates extends SocialStates {}
 
-class SocialGetAllUserSuccessStates extends SocialStates {}
+class SocialGetAllUserSuccessStates extends SocialStates {
+  List<UsersModel>users;
+  SocialGetAllUserSuccessStates(this.users);
+}
 
 class SocialGetAllUserErrorStates extends SocialStates {
   final String error;
@@ -151,4 +156,5 @@ class SocialUpdateUserPrivacySuccessStates extends SocialStates {}
 class SocialUpdateUserPrivacyErrorStates extends SocialStates {}
 
 class SocialmakePhoneCallStates extends SocialStates {}
+
 class SocialChangeDarkModeStates extends SocialStates {}

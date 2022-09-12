@@ -1,14 +1,11 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../app/Config/Config.dart';
+import '../../data/model/UsersModel.dart';
 import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
-import '../constant.dart';
-import '../modulo/usersmoder.dart';
 
 class HisProfile extends StatelessWidget {
   UsersModel users;

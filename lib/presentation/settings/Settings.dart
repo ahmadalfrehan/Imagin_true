@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/Config/Config.dart';
+import '../../main.dart';
 import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
-import '../constant.dart';
 import '../login/login_screen.dart';
-import '../../main.dart';
 import '../sharedHELper.dart';
 
 class SettingsS extends StatelessWidget {

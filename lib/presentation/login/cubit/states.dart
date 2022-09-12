@@ -1,3 +1,5 @@
+import 'package:imagin_true/data/model/ResponseFromModel.dart';
+
 abstract class LoginStates {}
 
 class LoginInitialState extends LoginStates {}
@@ -5,8 +7,9 @@ class LoginInitialState extends LoginStates {}
 class LoginLoadingState extends LoginStates {}
 
 class LoginSuccessState extends LoginStates {
-  final String uId;
-  LoginSuccessState(this.uId);
+  final ResponseFromModel responseFromModel;
+
+  LoginSuccessState(this.responseFromModel);
 }
 
 class LoginErrorState extends LoginStates {
@@ -16,4 +19,3 @@ class LoginErrorState extends LoginStates {
 }
 
 class ChangePasswordVisibilityState extends LoginStates {}
-

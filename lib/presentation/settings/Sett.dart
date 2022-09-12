@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
-import '../EditP/EditProfileScreen.dart';
-import '../login/login_screen.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -16,7 +14,7 @@ class SettingScreen extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => ChatCubit()..getUsers(),
       child: BlocConsumer<ChatCubit, SocialStates>(
-        listener: (context, state) {},   
+        listener: (context, state) {},
         builder: (context, state) {
           if (UserModel == null) {
             return const Center(
@@ -47,11 +45,11 @@ class SettingScreen extends StatelessWidget {
                           Container(
                             margin: size.width >= 500
                                 ? EdgeInsets.only(
-                                top: (size.width * 0.15) - 1,
-                                left: (size.width * 0.4) - 10)
+                                    top: (size.width * 0.15) - 1,
+                                    left: (size.width * 0.4) - 10)
                                 : EdgeInsets.only(
-                                top: (size.width * 0.3) - 1,
-                                left: (size.width * 0.32) - 10),
+                                    top: (size.width * 0.3) - 1,
+                                    left: (size.width * 0.32) - 10),
                             child: CircleAvatar(
                               radius: 84,
                               backgroundColor: Colors.white,
@@ -68,7 +66,9 @@ class SettingScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(height: 10,),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

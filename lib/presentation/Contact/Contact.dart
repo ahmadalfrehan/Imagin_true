@@ -1,12 +1,12 @@
 import 'dart:typed_data';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import '../../app/Config/Config.dart';
 import '../Chat/Cubit/cubit.dart';
 import '../Chat/Cubit/states.dart';
-import '../constant.dart';
 
 class Contactss extends StatelessWidget {
   const Contactss({Key? key}) : super(key: key);
@@ -34,11 +34,8 @@ class Contactss extends StatelessWidget {
                         return ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 18),
-                          trailing: Text(
-                            'Invite ?'),
+                          trailing: Text('Invite ?'),
                           onTap: () {
-
-
                             ChatCubit.get(context).makeMessage(
                                 ChatCubit.get(context).phones.elementAt(index));
                           },

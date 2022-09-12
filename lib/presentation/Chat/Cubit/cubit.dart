@@ -1,30 +1,10 @@
-import 'dart:core';
-import 'dart:io';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:contacts_service/contacts_service.dart';
-import 'package:dio/dio.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:imagin_true/presentation/Chat/Cubit/states.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:imagin_true/data/model/MessagesModel.dart';
+import 'package:imagin_true/data/model/UsersModel.dart';
 
-import '../../../app/Config/Config.dart';
-import '../../Contact/Contact.dart';
-import '../../modulo/chatModel.dart';
-import '../../modulo/usersmoder.dart';
-import '../../settings/Sett.dart';
-import '../../settings/Settings.dart';
-import '../../sharedHELper.dart';
-import '../All.dart';
-import '../chat.dart';
+import '../../../app/export/export.dart';
+import '../../../data/datasources/get_users_data_sources/get_users_data_sources.dart';
 
 class ChatCubit extends Cubit<SocialStates> {
   ChatCubit() : super(SocialInitialStates());
@@ -54,6 +34,51 @@ class ChatCubit extends Cubit<SocialStates> {
     emit(SocialChangeBottomNavStates());
   }
 
+  getContactsUseCase() async {
+    GetUsersDataSources getUsersDataSources = GetUsersDataSources();
+    var resultContact = await getUsersDataSources.getContacts();
+    resultContact.fold(
+        (l) => {
+              phones = l,
+              emit(SocialGetContactsSuccessStates()),
+            },
+        (r) => {
+              debugPrint('an Error occurred'),
+              debugPrint(r),
+            });
+  }
+
+  getUsersUseCase() async {
+    emit(SocialGetAllUserLoadingStates());
+    GetUsersDataSources getUsersDataSources = GetUsersDataSources();
+    var result = await getUsersDataSources.getAllUsers();
+    result.fold((l) {
+      users = l;
+      emit(SocialGetAllUserSuccessStates(l));
+      debugPrint(l.toString());
+    }, (r) {
+      emit(SocialGetAllUserErrorStates(r.toString()));
+      debugPrint('error in cubit ' + r.toString());
+    });
+  }
+
+  filteredUser() async {
+    GetUsersDataSources getUsersDataSources = GetUsersDataSources();
+    var result =
+        await getUsersDataSources.filterUsers();
+    result.fold(
+        (l) => {
+              emit(SocialGetAllUserSuccessStates(l)),
+              users = l,
+              print('this users ' + l.toString()),
+              debugPrint(l.toString()),
+            },
+        (r) => {
+              emit(SocialGetAllUserErrorStates(r.toString())),
+              debugPrint('error in cubit ' + r.toString()),
+            });
+  }
+
   void getUsers() {
     emit(SocialGetUserLoadingStates());
     FirebaseFirestore.instance
@@ -61,12 +86,13 @@ class ChatCubit extends Cubit<SocialStates> {
         .doc(uId)
         .get()
         .then((value) {
+      print(value.data());
       UU = UsersModel.fromJson(value.data() as Map<String, dynamic>);
       emit(
         SocialGetUserSuccessStates(),
       );
     }).catchError((onError) {
-      //emit(SocialGetUserErrorStates(onError.toString()));
+      emit(SocialGetUserErrorStates(onError.toString()));
       print("error" + onError.toString());
     });
   }
@@ -89,8 +115,9 @@ class ChatCubit extends Cubit<SocialStates> {
       });
     });
     FirebaseFirestore.instance.collection('chatusers').get().then((value) {
-      emit(SocialGetAllUserSuccessStates());
+      //  emit(SocialGetAllUserSuccessStates());
       value.docs.forEach((element) {
+        print(element.data());
         if (element.data()['uId'] != uId) {
           for (int i = 0; i < phones.length; i++) {
             if (element.data()['phone'] ==
@@ -126,7 +153,7 @@ class ChatCubit extends Cubit<SocialStates> {
     required bool isRead,
     String? Url,
   }) {
-    ChatModel modelChat = ChatModel(
+    MessagesModel modelChat = MessagesModel(
       text: text,
       SenderID: UU!.uId as String,
       reciverID: reciverID,
@@ -162,7 +189,7 @@ class ChatCubit extends Cubit<SocialStates> {
     });
   }
 
-  List<ChatModel> messages = [];
+  List<MessagesModel> messages = [];
 
   void getMessages({required String reciverID}) {
     emit(SocialGetMessageSuccessStates());
@@ -177,7 +204,7 @@ class ChatCubit extends Cubit<SocialStates> {
         .listen((event) {
       messages = [];
       event.docs.forEach((element) {
-        messages.add(ChatModel.fromJson(element.data()));
+        messages.add(MessagesModel.fromJson(element.data()));
       });
       //emit(SocialGetMessageSuccessStates());
     });
@@ -210,7 +237,7 @@ class ChatCubit extends Cubit<SocialStates> {
   }) {
     Fill(reciverID: reciverID);
     print('llflfll');
-    ChatModel c = ChatModel(
+    MessagesModel c = MessagesModel(
       reciverID: reciverID,
       text: text,
       SenderID: UU?.uId as String,
@@ -369,6 +396,8 @@ class ChatCubit extends Cubit<SocialStates> {
         profilePicturePrivacy: UU?.profilePicturePrivacy,
         coverPicturePrivacy: UU?.coverPicturePrivacy,
         BioPrivacy: UU?.BioPrivacy,
+        latestMessage: [],
+        password: '',
       );
       FirebaseFirestore.instance
           .collection('chatusers')
@@ -409,6 +438,8 @@ class ChatCubit extends Cubit<SocialStates> {
       emailAddressPrivacy:
           privacySelectionEmailAddress ?? UU?.emailAddressPrivacy,
       phoneNumberPrivacy: privacySelectionPhoneNumber ?? UU?.phoneNumberPrivacy,
+      password: '',
+      latestMessage: [],
     );
     FirebaseFirestore.instance
         .collection('chatusers')

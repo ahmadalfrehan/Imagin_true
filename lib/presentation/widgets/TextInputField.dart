@@ -22,7 +22,7 @@ class TextInputField extends StatelessWidget {
       child: TextFormField(
         decoration: InputDecoration(
           prefixIcon: iconData,
-          filled:isDark?false: true,
+          filled: isDark ? false : true,
           disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.0),
               borderSide: BorderSide(color: Colors.white)),

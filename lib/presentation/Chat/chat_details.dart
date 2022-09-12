@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:imagin_true/data/model/MessagesModel.dart';
 import 'package:imagin_true/presentation/Chat/HisProfile.dart';
 import '../../app/Config/Config.dart';
-import '../constant.dart';
-import '../modulo/chatModel.dart';
-import '../modulo/usersmoder.dart';
+import '../../data/model/UsersModel.dart';
 import 'Cubit/cubit.dart';
 import 'Cubit/states.dart';
 
@@ -56,8 +54,7 @@ class ChatDetailes extends StatelessWidget {
     };
     final headers = {
       'content-type': 'application/json',
-      'Authorization':
-          'key='
+      'Authorization': 'key='
     };
     try {
       final response = await http.post(
@@ -421,7 +418,7 @@ class ChatDetailes extends StatelessWidget {
     );
   }
 
-  Widget MyMessage(ChatModel t, context) => Align(
+  Widget MyMessage(MessagesModel t, context) => Align(
         alignment: AlignmentDirectional.centerEnd,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -548,7 +545,7 @@ class ChatDetailes extends StatelessWidget {
         ),
       );
 
-  Widget HisMessage(ChatModel t, context) => Align(
+  Widget HisMessage(MessagesModel t, context) => Align(
         alignment: AlignmentDirectional.centerStart,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

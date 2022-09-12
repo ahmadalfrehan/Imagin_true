@@ -1,320 +1,175 @@
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imagin_true/presentation/Widgets/TextInputField.dart';
+import 'package:imagin_true/presentation/Widgets/showBottom.dart';
+
 import '../../app/Config/Config.dart';
 import '../Home/HomeScreen.dart';
-import '../constant.dart';
-import '../../main.dart';
+import '../Widgets/SnackBar.dart';
 import '../register/register_screen.dart';
 import '../sharedHELper.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
 
 class LoginScreen extends StatelessWidget {
-  var formKey = GlobalKey<FormState>();
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
-  var ResetpassController = TextEditingController();
-  var Scaffoldkey = GlobalKey<ScaffoldState>();
-  bool isAbscure = true;
-
   @override
   Widget build(BuildContext context) {
-    var scaff = ScaffoldMessenger.of(context);
     return BlocProvider(
       create: (BuildContext context) => LoginCubit(),
       child: BlocConsumer<LoginCubit, LoginStates>(
         listener: (context, state) {
           if (state is LoginSuccessState) {
-            Shard.saveData(key: 'uId', value: state.uId).then((value) {
-              uId = Shard.sharedprefrences!.getString('uId');
-              Timer(
-                const Duration(seconds: 1),
-                () => main(),
-              );
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Earth(),
-                ),
-              );
+            ShowSnackBar.showSnackBar(
+                context: context, message: 'Success', color: Colors.green);
+            Shard.saveData(key: 'uId', value: state.responseFromModel.uId);
+            Shard.saveData(key: 'token', value: state.responseFromModel.token)
+                .then((value) {
+              uId = state.responseFromModel.uId;
+
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => Earth()),
+                  (route) => false);
             });
-            scaff.showSnackBar(
-              SnackBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                content: Column(
-                  children: [
-                    const SizedBox(
-                      height: 250,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(55),
-                        color: Colors.green,
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Success",
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Earth()),
+                (route) => false);
           } else if (state is LoginErrorState) {
-            scaff.showSnackBar(
-              SnackBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                content: Column(
-                  children: [
-                    const SizedBox(
-                      height: 250,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(55),
-                        color: Colors.red,
-                      ),
-                      child: const Center(
-                        child: Text("An error occurred try again !"),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            ShowSnackBar.showSnackBar(
+                context: context,
+                message: 'An Error Occurred try Again',
+                color: Colors.red);
           }
         },
         builder: (context, state) {
+          var login = LoginCubit.get(context);
           return Scaffold(
-            key: Scaffoldkey,
-            body: Container(
-              constraints: const BoxConstraints.expand(),
-              decoration: const BoxDecoration(
-                  // color: Color.fromARGB(255, 255, 255, 225),
-                  ),
-              child: Form(
-                key: formKey,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
-                  child: Column(
-                    children: [
-                       Text(
-                        "Welcome Back!",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color:!isDark ? Colors.black : Color(0xFFECF0F3),
-                        ),
-                      ),
-                      const Text(
-                        "login to get started ",
-                        style: TextStyle(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 20),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.email),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
+              key: LoginCubit.get(context).Scaffoldkey,
+              body: SafeArea(
+                child: Container(
+                  color: isDark
+                      ? Color.fromRGBO(23, 32, 44, 1)
+                      : Color.fromRGBO(244, 244, 250, 1),
+                  child: Form(
+                    key: login.formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextInputField(
+                                hint: 'email',
+                                controller: login.emailController,
+                                iconData: Icon(Icons.email),
                               ),
-                      //        fillColor: Colors.white,
-                              filled: true,
-                              labelText: 'Email'),
-                          controller: emailController,
-                          keyboardType: TextInputType.text,
-                          validator: (String? value) {
-                            if (value!.isEmpty) {
-                              return 'the Email must not be empty';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    isAbscure
-                                        ? isAbscure = LoginCubit.get(context)
-                                            .ChangeBool(isAbscure, false)
-                                        : isAbscure = LoginCubit.get(context)
-                                            .ChangeBool(isAbscure, true);
+                              TextInputField(
+                                hint: 'password',
+                                controller: login.passController,
+                                iconData: Icon(Icons.password),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 50),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: MaterialButton(
+                              height: 50,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              minWidth: double.infinity,
+                              color:
+                                  isDark ? Colors.grey.shade800 : Colors.orange,
+                              child: const Text(
+                                "Sign In",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (login.formKey.currentState!.validate()) {
+                                  LoginCubit.get(context).userLogin(
+                                    email: login.emailController.text,
+                                    password: login.passController.text,
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: [
+                                MaterialButton(
+                                  onPressed: () {
+                                    ShowBottom.showBottom(login.Scaffoldkey,
+                                        login.ResetpassController, () {
+                                      print('object');
+                                      login.forgotPassword(
+                                          email:
+                                              login.ResetpassController.text);
+                                    });
                                   },
-                                  child: isAbscure
-                                      ? Icon(Icons.visibility_off)
-                                      : Icon(Icons.visibility)),
-                              prefixIcon: const Icon(
-                                Icons.lock,
-                                // color: Colors.teal,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                        //      fillColor: Colors.white,
-                              filled: true,
-                              labelText: 'Password'),
-                          controller: passController,
-                          obscureText: isAbscure,
-                          keyboardType: TextInputType.text,
-                          validator: (String? value) {
-                            if (value!.isEmpty) {
-                              return 'the password must not be empty';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        decoration: const BoxDecoration(),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            side: const BorderSide(),
-                            primary: isDark ? Colors.grey.shade800 : Colors.orange,
-                            elevation: 7,
-                            shape: const StadiumBorder(side: BorderSide()),
-                            fixedSize: const Size(300, 50),
-                          ),
-                          onPressed: () {
-                            // if (formKey.currentState!.validate())
-                            // {
-                            if(formKey.currentState!.validate()){
-                            LoginCubit.get(context).userLogin(
-                              email: emailController.text,
-                              password: passController.text,
-                            );
-                            }
-                            // }
-                          },
-                          child: const Text(
-                            "Log in",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      const Text(
-                        "Don't have an account?",
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white),
-                          primary: Colors.white,
-                          elevation: 7,
-                          shape: const StadiumBorder(side: BorderSide()),
-                          fixedSize: const Size(300, 50),
-                        ),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RegisterScreen(),
-                            ),
-                            (route) {
-                              return false;
-                            },
-                          );
-                        },
-                        child: const Text(
-                          "Sign Up",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
-                          ),
-                        ),
-                      ),
-                      MaterialButton(
-                        onPressed: () {
-                          Scaffoldkey.currentState!
-                              .showBottomSheet(
-                                (context) => Scaffold(
-                                  body: Container(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: TextFormField(
-                                            controller: ResetpassController,
-                                            decoration: InputDecoration(
-                                              label:
-                                                  const Text("write your email"),
-                                              //fillColor: Colors.white,
-                                              filled: true,
-                                              enabled: true,
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                            ),
-                                            keyboardType: TextInputType.text,
-                                            validator: (String? value) {
-                                              if (value!.isEmpty) {
-                                                return 'the field must not be empty';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            FirebaseAuth.instance
-                                                .sendPasswordResetEmail(
-                                                    email:
-                                                        ResetpassController.text);
-                                          },
-                                          child: const Text('Send ? '),
-                                        ),
-                                      ],
+                                  child: const Text(
+                                    "Forgot password",
+                                    style: TextStyle(
+                                      //fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                              )
-                              .closed;
-                        },
-                        child: const Text(
-                          "Forgot password ?",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
+                              ],
+                            ),
                           ),
-                        ),
+                          Spacer(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Don't have an account?",
+                                textAlign: TextAlign.center,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RegisterScreen(),
+                                      ),
+                                      (route) {
+                                        return false;
+                                      },
+                                    );
+                                  },
+                                  child: Text('Sign up'))
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
+              ));
         },
       ),
     );

@@ -9,7 +9,6 @@ import '../Chat/Cubit/cubit.dart';
 import '../EditP/EditProfileScreen.dart';
 import '../login/login_screen.dart';
 
-
 class Earth extends StatelessWidget {
   const Earth({Key? key}) : super(key: key);
 
@@ -17,8 +16,7 @@ class Earth extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => ChatCubit()
-        ..getUsers()
-        ..getContacts(),
+        ..getUsersUseCase(),
       child: BlocConsumer<ChatCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -28,56 +26,56 @@ class Earth extends StatelessWidget {
               backgroundColor: isDark ? Color(0xff) : Color(0xFFECF0F3),
               title: !FirebaseAuth.instance.currentUser!.emailVerified
                   ? Container(
-                height: 60,
-                color: Colors.amber.withOpacity(0.2),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 2, left: 2),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.info_outline),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      const Expanded(
-                        child: Text(
-                          'verify your account To continue using this app',
+                      height: 60,
+                      color: Colors.amber.withOpacity(0.2),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 2, left: 2),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.info_outline),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            const Expanded(
+                              child: Text(
+                                'verify your account To continue using this app',
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                MaterialButton(
+                                  onPressed: () {
+                                    FirebaseAuth.instance.currentUser!
+                                        .sendEmailVerification();
+                                  },
+                                  child: const Text('Send?'),
+                                ),
+                                MaterialButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('logOut?'),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          MaterialButton(
-                            onPressed: () {
-                              FirebaseAuth.instance.currentUser!
-                                  .sendEmailVerification();
-                            },
-                            child: const Text('Send?'),
-                          ),
-                          MaterialButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
-                                ),
-                              );
-                            },
-                            child: const Text('logOut?'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              )
+                    )
                   : Text(
-                ChatCubit.get(context)
-                    .titles[ChatCubit.get(context).Cindex],
-                style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black),
-              ),
+                      ChatCubit.get(context)
+                          .titles[ChatCubit.get(context).Cindex],
+                      style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black),
+                    ),
               actions: [
                 if (ChatCubit.get(context)
-                    .titles[ChatCubit.get(context).Cindex] ==
+                        .titles[ChatCubit.get(context).Cindex] ==
                     'My Profile')
                   MaterialButton(
                     onPressed: () {
@@ -94,7 +92,7 @@ class Earth extends StatelessWidget {
                         Tab(
                           height: 25,
                           iconMargin:
-                          const EdgeInsets.symmetric(horizontal: 15),
+                              const EdgeInsets.symmetric(horizontal: 15),
                           icon: Container(
                             child: const Icon(
                               Icons.edit,
@@ -110,7 +108,7 @@ class Earth extends StatelessWidget {
             body: Container(
               color: isDark ? Color(0) : Color(0xFFECF0F3),
               child:
-              ChatCubit.get(context).screens[ChatCubit.get(context).Cindex],
+                  ChatCubit.get(context).screens[ChatCubit.get(context).Cindex],
             ),
             bottomNavigationBar: CurvedNavigationBar(
               index: ChatCubit.get(context).Cindex,

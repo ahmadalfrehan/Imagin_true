@@ -35,6 +35,11 @@ class UsersModel extends Users {
       ImageProfile: json['ImageProfile'],
       Cover: json['Cover'],
       password: json['password'],
+//      latestMessage: List<MessagesModel>.from(
+      //      json["latestMessage"].map(
+      //          (x) => MessagesModel.fromJson(x),
+      //  ),
+//      ),
     );
   }
 

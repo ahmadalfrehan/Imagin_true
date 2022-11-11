@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: uId != null ? Earth() : LoginScreen(),
+      home: uId != null ? Home() : LoginScreen(),
     );
   }
 }

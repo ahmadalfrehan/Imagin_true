@@ -28,11 +28,11 @@ class RegisterScreen extends StatelessWidget {
                 uId = state.responseFromModel.uId;
 
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => Earth()),
+                    MaterialPageRoute(builder: (context) => Home()),
                     (route) => false);
               });
               Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => Earth()),
+                  MaterialPageRoute(builder: (context) => Home()),
                   (route) => false);
             } else if (state is RegisterErrorState) {
               ShowSnackBar.showSnackBar(

@@ -3,14 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imagin_true/presentation/Chat/Cubit/states.dart';
-
 import '../../app/Config/Config.dart';
 import '../Chat/Cubit/cubit.dart';
 import '../EditP/EditProfileScreen.dart';
 import '../login/login_screen.dart';
 
-class Earth extends StatelessWidget {
-  const Earth({Key? key}) : super(key: key);
+class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +108,12 @@ class Earth extends StatelessWidget {
               color: isDark ? Color(0) : Color(0xFFECF0F3),
               child:
                   ChatCubit.get(context).screens[ChatCubit.get(context).Cindex],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: (){
+                ChatCubit.get(context).getUsersUseCase();
+              },
+
             ),
             bottomNavigationBar: CurvedNavigationBar(
               index: ChatCubit.get(context).Cindex,

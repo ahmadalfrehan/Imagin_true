@@ -55,7 +55,7 @@ class ChatCubit extends Cubit<SocialStates> {
     result.fold((l) {
       users = l;
       emit(SocialGetAllUserSuccessStates(l));
-      debugPrint(l.toString());
+///      debugPrint(l.toString());
     }, (r) {
       emit(SocialGetAllUserErrorStates(r.toString()));
       debugPrint('error in cubit ' + r.toString());

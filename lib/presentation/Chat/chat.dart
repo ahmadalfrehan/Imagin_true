@@ -53,6 +53,7 @@ class Chat extends StatelessWidget {
                   ),
             ),
           ),
+
         );
       },
     );
